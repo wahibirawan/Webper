@@ -19,7 +19,7 @@ export function Footer() {
                         You can inspect the source code on GitHub.
                     </p>
                     <Button size="sm" className="gap-2 bg-black text-white hover:bg-black/80 border-2 border-black" asChild>
-                        <a href="https://github.com/wahib/webcompress" target="_blank" rel="noopener noreferrer">
+                        <a href="https://github.com/wahibirawan/Webper" target="_blank" rel="noopener noreferrer">
                             <Github className="w-4 h-4" />
                             View on GitHub
                         </a>
