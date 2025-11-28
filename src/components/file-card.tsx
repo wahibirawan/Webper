@@ -23,88 +23,77 @@ export function FileCard({ file, onRemove }: FileCardProps) {
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="group relative overflow-hidden border-2 border-black bg-white p-4 pixel-shadow transition-all hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_#000]"
+            className="group relative flex items-center gap-4 p-3 rounded-lg border border-white/5 bg-white/5 hover:bg-white/10 transition-colors"
         >
-            <div className="flex items-start gap-4">
-                {/* Preview */}
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden border-2 border-black bg-secondary">
-                    {file.file.type.startsWith('image/') ? (
-                        <Image
-                            src={file.preview}
-                            alt={file.file.name}
-                            fill
-                            className="object-cover"
-                        />
-                    ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                            <FileIcon className="h-8 w-8 text-muted-foreground" />
-                        </div>
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black border border-white/10">
+                {file.file.type.startsWith('image/') ? (
+                    <Image
+                        src={file.preview}
+                        alt={file.file.name}
+                        fill
+                        className="object-cover"
+                    />
+                ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                        <FileIcon className="h-6 w-6 text-zinc-500" />
+                    </div>
+                )}
+            </div>
+
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
+                    <p className="truncate text-sm font-medium text-white">
+                        {file.file.name}
+                    </p>
+                    {file.status === 'done' && (
+                        <span className="text-xs font-mono text-green-400">
+                            -{Math.round((1 - (file.compressedSize! / file.originalSize)) * 100)}%
+                        </span>
                     )}
                 </div>
 
-                {/* Info */}
-                <div className="flex-1 min-w-0 space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                        <div className="truncate">
-                            <h4 className="font-bold text-sm truncate uppercase tracking-tight">
-                                {file.file.name}
-                            </h4>
-                            <p className="text-xs text-muted-foreground font-mono">
-                                {formatSize(file.originalSize)}
-                            </p>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 -mr-2 -mt-2 hover:bg-destructive hover:text-destructive-foreground rounded-none"
-                            onClick={() => onRemove(file.id)}
-                        >
-                            <X className="h-4 w-4" />
-                        </Button>
-                    </div>
+                <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
+                    <span>{formatSize(file.originalSize)}</span>
+                    {file.status === 'done' && (
+                        <span className="text-white">
+                            {formatSize(file.compressedSize!)}
+                        </span>
+                    )}
+                    {file.status === 'processing' && (
+                        <span className="text-zinc-400 animate-pulse">Processing...</span>
+                    )}
 
-                    {/* Progress / Status */}
-                    <div className="space-y-1">
-                        <div className="flex items-center justify-between text-xs font-mono uppercase">
-                            <span>
-                                {file.status === 'queued' && 'WAITING...'}
-                                {file.status === 'processing' && 'COMPRESSING...'}
-                                {file.status === 'done' && 'DONE'}
-                                {file.status === 'error' && 'ERROR'}
-                            </span>
-                            {file.status === 'done' && (
-                                <span className="text-primary font-bold">
-                                    -{Math.round((1 - file.compressedSize! / file.originalSize) * 100)}%
-                                </span>
-                            )}
-                        </div>
-
-                        <div className="h-3 w-full border-2 border-black bg-secondary p-[1px]">
-                            <motion.div
-                                className={cn(
-                                    "h-full transition-all duration-300",
-                                    file.status === 'error' ? "bg-destructive" : "bg-primary"
-                                )}
-                                initial={{ width: 0 }}
-                                animate={{
-                                    width: file.status === 'queued' ? '0%' :
-                                        file.status === 'processing' ? '50%' :
-                                            file.status === 'done' ? '100%' : '100%'
-                                }}
-                            />
-                        </div>
-
-                        {file.status === 'done' && (
-                            <div className="flex justify-between text-xs font-mono text-muted-foreground">
-                                <span>{formatSize(file.compressedSize!)}</span>
-                            </div>
-                        )}
-                    </div>
+                    {file.status === 'error' && (
+                        <span className="text-red-400">Error</span>
+                    )}
                 </div>
+
+                {/* Progress Bar */}
+                {(file.status === 'processing' || file.status === 'done') && (
+                    <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                        <motion.div
+                            className="h-full bg-white"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${file.progress}%` }}
+                            transition={{ duration: 0.2 }}
+                        />
+                    </div>
+                )}
             </div>
+
+            {file.status === 'queued' && (
+                <span className="hidden md:inline-flex text-[10px] uppercase tracking-wider font-bold text-zinc-500 bg-white/5 px-2 py-1 rounded-full border border-white/5 mr-2">Ready</span>
+            )}
+
+            <button
+                onClick={() => onRemove(file.id)}
+                className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+            >
+                <X className="w-4 h-4" />
+            </button>
         </motion.div>
     );
 }

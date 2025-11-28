@@ -1,59 +1,62 @@
-import { Shell } from '@/components/shell';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
-import { Shield, Zap, Lock, Heart } from 'lucide-react';
+"use client";
+
+import { Shell } from "@/components/shell";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
+import { BackgroundBeams } from "@/components/ui/background-beams";
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen flex flex-col font-mono">
-            <Shell>
-                <Navbar />
+        <Shell>
+            <Navbar />
 
-                <div className="max-w-3xl mx-auto w-full space-y-12 py-12">
-                    <div className="text-center space-y-4">
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-foreground font-pixel leading-relaxed">
-                            About Webper
-                        </h1>
-                        <p className="text-xl text-muted-foreground">
-                            The retro-styled, privacy-first image compressor.
-                        </p>
-                    </div>
+            <div className="fixed inset-0 z-0 pointer-events-none">
+                <BackgroundBeams />
+            </div>
 
-                    <div className="grid gap-8 md:grid-cols-2">
-                        <div className="bg-white border-2 border-black p-6 pixel-shadow space-y-4">
-                            <div className="w-12 h-12 bg-primary/20 flex items-center justify-center border-2 border-black">
-                                <Lock className="w-6 h-6 text-primary" />
-                            </div>
-                            <h2 className="text-xl font-bold uppercase tracking-wide">Privacy First</h2>
-                            <p className="text-muted-foreground">
-                                Your images never leave your device. All compression happens locally in your browser using advanced WebAssembly technology. No servers, no uploads, no worries.
-                            </p>
-                        </div>
-
-                        <div className="bg-white border-2 border-black p-6 pixel-shadow space-y-4">
-                            <div className="w-12 h-12 bg-accent/20 flex items-center justify-center border-2 border-black">
-                                <Zap className="w-6 h-6 text-accent-foreground" />
-                            </div>
-                            <h2 className="text-xl font-bold uppercase tracking-wide">Blazing Fast</h2>
-                            <p className="text-muted-foreground">
-                                Powered by modern browser capabilities, Webper compresses your images instantly without the latency of network transfers.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="space-y-6 bg-card border-2 border-black p-8 pixel-shadow">
-                        <h2 className="text-2xl font-bold uppercase font-pixel">Our Mission</h2>
-                        <p className="text-lg leading-relaxed">
-                            In an age of cloud dependency, we believe in the power of local computing. Webper was built to prove that you don't need to sacrifice privacy for convenience. We combined the nostalgic aesthetics of the 8-bit era with cutting-edge web performance to create a tool that's both fun to use and incredibly powerful.
-                        </p>
-                        <div className="flex items-center gap-2 text-muted-foreground pt-4">
-                            <Heart className="w-5 h-5 text-destructive" />
-                            <span>Crafted with love for the web.</span>
-                        </div>
-                    </div>
+            <div className="relative z-10 pt-20 pb-12 space-y-16 max-w-3xl mx-auto">
+                <div className="text-center space-y-6">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
+                        About Webper
+                    </h1>
+                    <p className="text-xl text-zinc-400 font-light leading-relaxed">
+                        The professional, privacy-first image compression tool for the modern web.
+                    </p>
                 </div>
-            </Shell>
+
+                <div className="space-y-12">
+                    <section className="space-y-4">
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Our Mission</h2>
+                        <p className="text-zinc-400 leading-relaxed">
+                            Webper was built to solve a simple problem: developers and designers need a fast, reliable way to optimize images without sacrificing privacy or quality. Most online tools upload your files to a server, which can be slow and insecure. Webper processes everything locally in your browser using WebAssembly.
+                        </p>
+                    </section>
+
+                    <section className="space-y-4">
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Why Webper?</h2>
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <h3 className="text-lg font-bold text-white mb-2">Privacy First</h3>
+                                <p className="text-sm text-zinc-400">Your images never leave your device. All compression happens locally in your browser.</p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <h3 className="text-lg font-bold text-white mb-2">Blazing Fast</h3>
+                                <p className="text-sm text-zinc-400">Powered by WebAssembly for near-native performance, even on large files.</p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <h3 className="text-lg font-bold text-white mb-2">Professional Quality</h3>
+                                <p className="text-sm text-zinc-400">Advanced algorithms ensure the best balance between file size and visual fidelity.</p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                                <h3 className="text-lg font-bold text-white mb-2">Open Source</h3>
+                                <p className="text-sm text-zinc-400">Transparent and community-driven. You can inspect our code on GitHub.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
             <Footer />
-        </div>
+        </Shell>
     );
 }

@@ -1,118 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --font-mono: var(--font-space-mono), monospace;
-  --font-pixel: var(--font-press-start), monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-background: #E8DCCA;
-  /* Cream/Latte */
-  --color-foreground: #3E2723;
-  /* Dark Brown/Espresso */
+  --color-background: #050505;
+  --color-foreground: #ffffff;
 
-  --color-card: #F5F5DC;
-  /* Beige */
-  --color-card-foreground: #3E2723;
+  --color-card: #0a0a0a;
+  --color-card-foreground: #ffffff;
 
-  --color-popover: #F5F5DC;
-  --color-popover-foreground: #3E2723;
+  --color-popover: #0a0a0a;
+  --color-popover-foreground: #ffffff;
 
-  --color-primary: #8D5524;
-  /* Retro Wood Brown */
-  --color-primary-foreground: #FFFFFF;
+  --color-primary: #ffffff;
+  --color-primary-foreground: #000000;
 
-  --color-secondary: #D7CCC8;
-  /* Light Brown */
-  --color-secondary-foreground: #3E2723;
+  --color-secondary: #1a1a1a;
+  --color-secondary-foreground: #ffffff;
 
-  --color-muted: #D7CCC8;
-  --color-muted-foreground: #5D4037;
+  --color-muted: #1a1a1a;
+  --color-muted-foreground: #a1a1aa;
 
-  --color-accent: #00695C;
-  /* Teal */
-  --color-accent-foreground: #FFFFFF;
+  --color-accent: #1a1a1a;
+  --color-accent-foreground: #ffffff;
 
-  --color-destructive: #C62828;
-  /* Red */
-  --color-destructive-foreground: #FFFFFF;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
 
-  --color-border: #3E2723;
-  --color-input: #3E2723;
-  --color-ring: #8D5524;
+  --color-border: #27272a;
+  --color-input: #27272a;
+  --color-ring: #ffffff;
 
-  --color-chart-1: #8D5524;
-  --color-chart-2: #00695C;
-  --color-chart-3: #F9A825;
-  /* Yellow/Gold */
-  --color-chart-4: #AD1457;
-  /* Pink/Purple */
-  --color-chart-5: #5D4037;
-
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
-
-  --animate-scan: scan 2s ease-in-out infinite;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 }
-
-.font-pixel {
-  font-family: var(--font-pixel);
-}
-
-@keyframes scan {
-
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.5;
-  }
-
-  50% {
-    transform: translateY(100%);
-    opacity: 1;
-  }
-}
-
 
 :root {
-  /* Retro Light Theme */
-  --background: #f0f0f0;
-  /* Light Beige/Grey */
-  --foreground: #202020;
-  /* Dark Grey/Black */
-
-  --card: #ffffff;
-  --card-foreground: #202020;
-
-  --popover: #ffffff;
-  --popover-foreground: #202020;
-
-  --primary: #3b82f6;
-  /* Retro Blue */
-  --primary-foreground: #ffffff;
-
-  --secondary: #e5e5e5;
-  /* Light Grey */
-  --secondary-foreground: #202020;
-
-  --muted: #d4d4d4;
-  --muted-foreground: #525252;
-
-  --accent: #facc15;
-  /* Retro Yellow */
-  --accent-foreground: #202020;
-
+  --background: #050505;
+  --foreground: #ffffff;
+  --card: #0a0a0a;
+  --card-foreground: #ffffff;
+  --popover: #0a0a0a;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #a1a1aa;
+  --accent: #1a1a1a;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
-  /* Retro Red */
   --destructive-foreground: #ffffff;
-
-  --border: #000000;
-  /* Black Borders */
-  --input: #ffffff;
-  --ring: #000000;
-
-  --radius: 0px;
-  /* No rounded corners */
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #ffffff;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -121,47 +67,35 @@
   }
 
   body {
-    @apply bg-background text-foreground font-mono;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-white/20 selection:text-white;
   }
 }
 
 @layer utilities {
-  .pixel-shadow {
-    box-shadow: 4px 4px 0px 0px #000000;
+  .glass {
+    @apply bg-black/40 backdrop-blur-xl border-b border-white/5;
   }
 
-  .pixel-shadow-sm {
-    box-shadow: 2px 2px 0px 0px #000000;
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
   }
 
-  .pixel-shadow-lg {
-    box-shadow: 6px 6px 0px 0px #000000;
-  }
-
-  .pixel-border {
-    border: 2px solid #000000;
-  }
-
-  .pixel-border-sm {
-    border: 1px solid #000000;
-  }
-
-  /* Custom Scrollbar for Retro Feel */
+  /* Custom Scrollbar for Dark Minimalist Theme */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
+    height: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: #e5e5e5;
-    border-left: 2px solid #000;
+    background: transparent;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #3b82f6;
-    border: 2px solid #000;
+    background: #333;
+    border-radius: 3px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #2563eb;
+    background: #555;
   }
 }

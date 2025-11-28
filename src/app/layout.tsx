@@ -1,17 +1,16 @@
 import type { Metadata } from "next";
-import { Space_Mono, Press_Start_2P } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-space-mono",
+  variable: "--font-inter",
 });
 
-const pressStart2P = Press_Start_2P({
-  weight: "400",
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-press-start",
+  variable: "--font-jetbrains-mono",
 });
 
 export const metadata: Metadata = {
@@ -25,12 +24,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
-        className={`${spaceMono.variable} ${pressStart2P.variable} font-mono antialiased min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground`}
-        style={{ fontFamily: 'var(--font-space-mono)' }}
+        className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased min-h-screen bg-background text-foreground`}
       >
         {children}
+        <Toaster theme="dark" />
       </body>
     </html>
   );

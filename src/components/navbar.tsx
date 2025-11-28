@@ -11,34 +11,42 @@ export function Navbar() {
 
     return (
         <>
-            <nav className="flex items-center justify-between px-6 py-3 bg-white border-2 border-black pixel-shadow max-w-5xl mx-auto w-full sticky top-4 z-[100]">
-                <div className="flex items-center gap-8">
-                    <Link href="/" className="font-bold text-xl tracking-tight uppercase font-pixel">
-                        Webper
-                    </Link>
-                    <div className="hidden md:flex items-center gap-4">
-                        <Link href="/about" className="text-sm uppercase font-bold hover:underline decoration-2 underline-offset-4">About</Link>
-                        <Link href="/how-to-use" className="text-sm uppercase font-bold hover:underline decoration-2 underline-offset-4">How to Use</Link>
+            <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-5xl z-50">
+                <div className="glass rounded-full px-6 py-3 flex items-center justify-between shadow-2xl shadow-black/50">
+                    <div className="flex items-center gap-8">
+                        <Link href="/" className="font-bold text-lg tracking-tight text-white flex items-center gap-2">
+                            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 3v19" />
+                                    <path d="M5 10l7 7 7-7" />
+                                </svg>
+                            </div>
+                            Webper
+                        </Link>
+                        <div className="hidden md:flex items-center gap-6">
+                            <Link href="/about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">About</Link>
+                            <Link href="/how-to-use" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Docs</Link>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        size="sm"
-                        className="hidden md:flex gap-2 bg-accent text-accent-foreground hover:bg-[#004D40] border-2 border-black"
-                    >
-                        <Coffee className="w-4 h-4" />
-                        <span className="hidden sm:inline">Buy me a coffee</span>
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            size="sm"
+                            className="hidden md:flex gap-2 bg-white text-black hover:bg-zinc-200 border-none rounded-full font-medium h-9 px-4"
+                        >
+                            <Coffee className="w-4 h-4" />
+                            <span>Support</span>
+                        </Button>
 
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="md:hidden"
-                        onClick={() => setIsOpen(true)}
-                    >
-                        <Menu className="w-6 h-6" />
-                    </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden text-zinc-400 hover:text-white hover:bg-white/10 rounded-full"
+                            onClick={() => setIsOpen(true)}
+                        >
+                            <Menu className="w-6 h-6" />
+                        </Button>
+                    </div>
                 </div>
             </nav>
 
@@ -46,35 +54,35 @@ export function Navbar() {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, x: '100%' }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: 'tween', duration: 0.3 }}
-                        className="fixed inset-0 z-[100] bg-background border-l-4 border-black md:hidden flex flex-col p-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl md:hidden flex flex-col p-6"
                     >
-                        <div className="flex items-center justify-between mb-8 border-b-4 border-black pb-4">
-                            <span className="font-bold text-2xl uppercase">Webper</span>
+                        <div className="flex items-center justify-between mb-12">
+                            <span className="font-bold text-2xl text-white">Webper</span>
                             <Button
                                 variant="ghost"
                                 size="icon"
+                                className="rounded-full hover:bg-white/10 text-white"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <X className="w-8 h-8" />
                             </Button>
                         </div>
 
-                        <div className="flex flex-col gap-6 flex-1">
-                            <Link href="/about" className="text-2xl hover:bg-primary/10 p-2 border-2 border-transparent hover:border-black transition-none" onClick={() => setIsOpen(false)}>
+                        <div className="flex flex-col gap-8 flex-1">
+                            <Link href="/about" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
                                 About
                             </Link>
-                            <Link href="/how-to-use" className="text-2xl hover:bg-primary/10 p-2 border-2 border-transparent hover:border-black transition-none" onClick={() => setIsOpen(false)}>
-                                How to Use
+                            <Link href="/how-to-use" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                                Documentation
                             </Link>
 
                             <div className="mt-auto pb-8">
-                                <Button variant="outline" className="w-full gap-2 h-14 text-lg" onClick={() => setIsOpen(false)}>
+                                <Button className="w-full gap-2 h-14 text-lg rounded-full bg-white text-black hover:bg-zinc-200 border-none font-bold" onClick={() => setIsOpen(false)}>
                                     <Coffee className="w-6 h-6" />
-                                    Buy me a coffee
+                                    Support Project
                                 </Button>
                             </div>
                         </div>
