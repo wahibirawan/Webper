@@ -41,16 +41,16 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
             {/* Format Section */}
             <div className="space-y-3">
                 <Label className="text-sm font-medium text-white">Output Format</Label>
-                <div className="grid grid-cols-3 gap-2 p-1 bg-white/5 rounded-lg border border-white/5">
+                <div className="grid grid-cols-3 gap-2 p-1 bg-zinc-900/80 rounded-lg border border-zinc-700">
                     {(['image/webp', 'image/png', 'image/jpeg'] as const).map((fmt) => (
                         <button
                             key={fmt}
                             onClick={() => handleFormatChange(fmt)}
                             className={`
-                                py-2 px-3 rounded-md text-xs font-bold transition-all
+                                py-2 px-3 rounded-md text-xs font-bold transition-all cursor-pointer
                                 ${settings.format === fmt
                                     ? 'bg-white text-black shadow-sm'
-                                    : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                                    : 'text-zinc-400 hover:text-white hover:bg-white/10'
                                 }
                             `}
                         >
@@ -82,7 +82,7 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
             {/* Dimensions Section */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-3">
-                    <Label htmlFor="maxWidth" className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Max Width</Label>
+                    <Label htmlFor="maxWidth" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Max Width</Label>
                     <Input
                         id="maxWidth"
                         name="maxWidth"
@@ -90,11 +90,11 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                         placeholder="Auto"
                         value={settings.maxWidth || ''}
                         onChange={handleInputChange}
-                        className="font-mono text-sm bg-zinc-900/50 border-zinc-800 focus:border-white/20 focus:bg-black transition-colors"
+                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600"
                     />
                 </div>
                 <div className="space-y-3">
-                    <Label htmlFor="maxHeight" className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Max Height</Label>
+                    <Label htmlFor="maxHeight" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Max Height</Label>
                     <Input
                         id="maxHeight"
                         name="maxHeight"
@@ -102,7 +102,7 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                         placeholder="Auto"
                         value={settings.maxHeight || ''}
                         onChange={handleInputChange}
-                        className="font-mono text-sm bg-zinc-900/50 border-zinc-800 focus:border-white/20 focus:bg-black transition-colors"
+                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600"
                     />
                 </div>
             </div>

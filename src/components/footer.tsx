@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Github } from 'lucide-react';
+import Link from 'next/link';
 
 export function Footer() {
     return (
@@ -25,17 +26,17 @@ export function Footer() {
                 <div className="space-y-4">
                     <h4 className="text-sm font-bold text-white uppercase tracking-wider">Product</h4>
                     <ul className="space-y-2 text-sm text-zinc-500">
-                        <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                        <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
-                        <li><a href="#" className="hover:text-white transition-colors">Changelog</a></li>
+                        <li><Link href="/features" className="hover:text-white transition-colors">Features</Link></li>
+                        <li><Link href="/security" className="hover:text-white transition-colors">Security</Link></li>
+                        <li><Link href="/changelog" className="hover:text-white transition-colors">Changelog</Link></li>
                     </ul>
                 </div>
 
                 <div className="space-y-4">
                     <h4 className="text-sm font-bold text-white uppercase tracking-wider">Legal</h4>
                     <ul className="space-y-2 text-sm text-zinc-500">
-                        <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                        <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                        <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
                         <li><p>&copy; {new Date().getFullYear()} Webper</p></li>
                     </ul>
                 </div>

@@ -30,33 +30,30 @@ export function Dropzone({ onFilesDrop }: DropzoneProps) {
             <div
                 {...getRootProps()}
                 className={cn(
-                    "relative group cursor-pointer overflow-hidden rounded-xl border border-dashed border-zinc-800 bg-zinc-900/30 transition-all duration-300 hover:border-zinc-600 hover:bg-zinc-900/50",
-                    isDragActive && "border-white/50 bg-zinc-900/80 ring-1 ring-white/20"
+                    "relative group cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-zinc-700 bg-zinc-900/50 transition-all duration-300 hover:border-zinc-500 hover:bg-zinc-900/80",
+                    isDragActive && "border-white/50 bg-zinc-900/90 ring-1 ring-white/20"
                 )}
             >
                 <input {...getInputProps()} />
                 <div className="flex flex-col items-center justify-center gap-4 py-16 px-4 text-center">
                     <div className={cn(
-                        "p-4 rounded-full bg-zinc-900 border border-zinc-800 transition-transform duration-300 group-hover:scale-110 group-hover:border-zinc-700",
-                        isDragActive && "scale-110 border-white/20 bg-zinc-800"
+                        "p-4 rounded-full bg-white border border-white transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.5)]",
+                        isDragActive && "scale-110 shadow-[0_0_30px_-5px_rgba(255,255,255,0.6)]"
                     )}>
-                        <Upload className={cn(
-                            "w-8 h-8 text-zinc-500 transition-colors duration-300 group-hover:text-white",
-                            isDragActive && "text-white"
-                        )} />
+                        <Upload className="w-8 h-8 text-black" />
                     </div>
                     <div className="space-y-2">
-                        <h3 className="text-lg font-medium text-white tracking-tight">
-                            {isDragActive ? "Drop files now" : "Upload images"}
+                        <h3 className="text-xl font-bold text-white tracking-tight">
+                            {isDragActive ? "Drop files now" : "Upload Files"}
                         </h3>
-                        <p className="text-sm text-zinc-500 font-mono">
-                            Drag & drop or click to select
+                        <p className="text-sm text-zinc-400 font-mono">
+                            Support multiple files (JPG, PNG, WEBP)
                         </p>
                     </div>
-                    <div className="flex gap-2 mt-2">
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-500">JPG</span>
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-500">PNG</span>
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-900 border border-zinc-800 text-zinc-500">WEBP</span>
+                    <div className="flex gap-2 mt-2 opacity-50">
+                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">JPG</span>
+                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">PNG</span>
+                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">WEBP</span>
                     </div>
                 </div>
             </div>

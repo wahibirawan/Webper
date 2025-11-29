@@ -1,18 +1,36 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Coffee, Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     return (
         <>
             <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-5xl z-50">
-                <div className="glass rounded-full px-6 py-3 flex items-center justify-between shadow-2xl shadow-black/50">
+                <div
+                    className={cn(
+                        "rounded-full px-6 py-3 flex items-center justify-between transition-all duration-300",
+                        isScrolled
+                            ? "glass shadow-2xl shadow-black/50"
+                            : "bg-transparent border border-transparent"
+                    )}
+                >
                     <div className="flex items-center gap-8">
                         <Link href="/" className="font-bold text-lg tracking-tight text-white flex items-center gap-2">
                             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">
@@ -25,7 +43,7 @@ export function Navbar() {
                         </Link>
                         <div className="hidden md:flex items-center gap-6">
                             <Link href="/about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">About</Link>
-                            <Link href="/how-to-use" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Docs</Link>
+                            <Link href="/how-to-use" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">How to Use</Link>
                         </div>
                     </div>
 
@@ -33,9 +51,12 @@ export function Navbar() {
                         <Button
                             size="sm"
                             className="hidden md:flex gap-2 bg-white text-black hover:bg-zinc-200 border-none rounded-full font-medium h-9 px-4"
+                            asChild
                         >
-                            <Coffee className="w-4 h-4" />
-                            <span>Support</span>
+                            <a href="https://buymeacoffee.com/wahibirawan" target="_blank" rel="noopener noreferrer">
+                                <Coffee className="w-4 h-4" />
+                                <span>Support</span>
+                            </a>
                         </Button>
 
                         <Button
@@ -76,13 +97,15 @@ export function Navbar() {
                                 About
                             </Link>
                             <Link href="/how-to-use" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
-                                Documentation
+                                How to Use
                             </Link>
 
                             <div className="mt-auto pb-8">
-                                <Button className="w-full gap-2 h-14 text-lg rounded-full bg-white text-black hover:bg-zinc-200 border-none font-bold" onClick={() => setIsOpen(false)}>
-                                    <Coffee className="w-6 h-6" />
-                                    Support Project
+                                <Button className="w-full gap-2 h-14 text-lg rounded-full bg-white text-black hover:bg-zinc-200 border-none font-bold" asChild>
+                                    <a href="https://buymeacoffee.com/wahibirawan" target="_blank" rel="noopener noreferrer">
+                                        <Coffee className="w-6 h-6" />
+                                        Support Project
+                                    </a>
                                 </Button>
                             </div>
                         </div>

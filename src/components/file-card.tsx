@@ -1,10 +1,21 @@
 import React from 'react';
-import { FileItem } from './file-list';
 import { Button } from '@/components/ui/button';
 import { X, FileIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+
+export interface FileItem {
+    id: string;
+    file: File;
+    preview: string;
+    status: 'queued' | 'processing' | 'done' | 'error';
+    progress: number;
+    originalSize: number;
+    compressedSize?: number;
+    error?: string;
+    blob?: Blob;
+}
 
 interface FileCardProps {
     file: FileItem;

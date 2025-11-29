@@ -17,7 +17,7 @@ export default function HowToUsePage() {
             <div className="relative z-10 pt-20 pb-12 space-y-16 max-w-3xl mx-auto">
                 <div className="text-center space-y-6">
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tighter text-white">
-                        Documentation
+                        How to Use
                     </h1>
                     <p className="text-xl text-zinc-400 font-light leading-relaxed">
                         Learn how to get the most out of Webper.
@@ -37,7 +37,7 @@ export default function HowToUsePage() {
                         </div>
 
                         <div className="flex gap-6">
-                            <div className="flex-none w-12 h-12 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center font-bold text-xl">2</div>
+                            <div className="flex-none w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-bold text-xl">2</div>
                             <div className="space-y-2">
                                 <h3 className="text-2xl font-bold text-white">Configure Settings</h3>
                                 <p className="text-zinc-400 leading-relaxed">
@@ -47,7 +47,7 @@ export default function HowToUsePage() {
                         </div>
 
                         <div className="flex gap-6">
-                            <div className="flex-none w-12 h-12 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center font-bold text-xl">3</div>
+                            <div className="flex-none w-12 h-12 rounded-full bg-white text-black flex items-center justify-center font-bold text-xl">3</div>
                             <div className="space-y-2">
                                 <h3 className="text-2xl font-bold text-white">Compress & Download</h3>
                                 <p className="text-zinc-400 leading-relaxed">

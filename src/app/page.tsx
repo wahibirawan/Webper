@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Shell } from '@/components/shell';
 import { Dropzone } from '@/components/dropzone';
-import { FileList, FileItem } from '@/components/file-list';
-import { FileCard } from '@/components/file-card';
+import { FileCard, FileItem } from '@/components/file-card';
 import { CompressionSettings, SettingsState } from '@/components/compression-settings';
 import { compressImage } from '@/lib/compressor';
 import { Button } from '@/components/ui/button';
@@ -233,7 +232,7 @@ export default function Home() {
               className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-zinc-400 backdrop-blur-md"
             >
               <span className="flex h-2 w-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-              <span className="text-xs font-mono tracking-wide">100% LOCAL PROCESSING</span>
+              <span className="text-xs font-mono tracking-wide">100% PRIVATE. NO DATA LEAVES YOUR MACHINE.</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -242,9 +241,8 @@ export default function Home() {
           Optimize images <br />
           <span className="text-zinc-500">without limits.</span>
         </h1>
-        <p className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
-          Professional-grade compression for modern web development. <br className="hidden md:block" />
-          Privacy-first, client-side, and open source.
+        <p className="text-zinc-400 text-md md:text-md max-w-2xl mx-auto font-light tracking-wide leading-relaxed">
+          Professional-grade image compression for modern web development
         </p>
       </div>
 

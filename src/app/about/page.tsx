@@ -53,6 +53,49 @@ export default function AboutPage() {
                             </div>
                         </div>
                     </section>
+
+                    <section className="space-y-6">
+                        <h2 className="text-2xl font-bold text-white tracking-tight">Performance Benchmarks</h2>
+                        <p className="text-zinc-400">
+                            Typical compression results for a 2MB high-resolution photograph.
+                        </p>
+
+                        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                            <table className="w-full text-left text-sm">
+                                <thead className="bg-white/5 text-zinc-400 font-medium uppercase tracking-wider text-xs">
+                                    <tr>
+                                        <th className="px-6 py-4">Format</th>
+                                        <th className="px-6 py-4">Original Size</th>
+                                        <th className="px-6 py-4">Compressed Size</th>
+                                        <th className="px-6 py-4 text-right">Reduction</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-white/5 text-zinc-300">
+                                    <tr className="hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 font-bold text-white">WebP</td>
+                                        <td className="px-6 py-4 font-mono text-zinc-500">2.0 MB</td>
+                                        <td className="px-6 py-4 font-mono text-white">0.3 MB</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold text-green-400">~85%</td>
+                                    </tr>
+                                    <tr className="hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 font-bold text-white">JPEG</td>
+                                        <td className="px-6 py-4 font-mono text-zinc-500">2.0 MB</td>
+                                        <td className="px-6 py-4 font-mono text-white">0.5 MB</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold text-green-400">~75%</td>
+                                    </tr>
+                                    <tr className="hover:bg-white/5 transition-colors">
+                                        <td className="px-6 py-4 font-bold text-white">PNG <span className="text-xs font-normal text-zinc-500 ml-1">(Quantized)</span></td>
+                                        <td className="px-6 py-4 font-mono text-zinc-500">2.0 MB</td>
+                                        <td className="px-6 py-4 font-mono text-white">0.6 MB</td>
+                                        <td className="px-6 py-4 text-right font-mono font-bold text-green-400">~70%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p className="text-xs text-zinc-500 italic text-center">
+                            * Results may vary depending on image complexity and quality settings.
+                        </p>
+                    </section>
                 </div>
             </div>
 
