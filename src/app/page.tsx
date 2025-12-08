@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import NextImage from 'next/image';
 import { Download, X, Shield, FileIcon, Settings } from 'lucide-react';
 import { toast } from 'sonner';
-import JSZip from 'jszip';
 import { Navbar } from '@/components/navbar';
 import { Announcement } from '@/components/announcement';
 import { Footer } from '@/components/footer';
@@ -32,6 +31,10 @@ export default function Home() {
   });
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
   const [showAnnouncement, setShowAnnouncement] = useState(true);
+
+  // Derived state for list separation
+  const queueFiles = files.filter(f => f.status !== 'done');
+  const finishedFiles = files.filter(f => f.status === 'done');
 
   const handleFilesDrop = useCallback((newFiles: File[]) => {
     const newFileItems: FileItem[] = newFiles.map((file) => ({
@@ -71,7 +74,7 @@ export default function Home() {
     }));
   }, []);
 
-  const downloadFiles = (filesToDownload: FileItem[]) => {
+  const downloadFiles = async (filesToDownload: FileItem[]) => {
     if (filesToDownload.length === 0) return;
 
     const getExtension = (type: string) => {
@@ -82,6 +85,11 @@ export default function Home() {
       }
     };
 
+    // Generate formatted timestamp: YYYYMMDD_HHMMSS
+    const now = new Date();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
     if (filesToDownload.length === 1) {
       // Single file download
       const file = filesToDownload[0];
@@ -91,18 +99,27 @@ export default function Home() {
       const a = document.createElement('a');
       a.href = url;
       const ext = getExtension(file.blob.type);
-      a.download = file.file.name.replace(/\.[^/.]+$/, '') + '.' + ext;
+      // New naming: webper_timedate.ext
+      a.download = `webper_${timestamp}.${ext}`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
       // ZIP download
+      const JSZip = (await import('jszip')).default;
       const zip = new JSZip();
-      filesToDownload.forEach((f) => {
+      filesToDownload.forEach((f, index) => {
         if (f.blob) {
           const ext = getExtension(f.blob.type);
-          zip.file(f.file.name.replace(/\.[^/.]+$/, '') + '.' + ext, f.blob);
+          // Ensure unique names in zip if multiple files are processed at same second (unlikely to clash but good practice)
+          // Actually, let's keep original names inside zip or use formatted names? 
+          // User asked for "naming hasil compress dan zip". 
+          // Usually inside zip people prefer original names or a standard convention.
+          // Let's stick to the user's requested format for the ZIP file itself, 
+          // and for files inside, unique names are safer.
+          // Usage: webper_timedate_index.ext to avoid collisions
+          zip.file(`webper_${timestamp}_${index + 1}.${ext}`, f.blob);
         }
       });
 
@@ -110,7 +127,8 @@ export default function Home() {
         const url = URL.createObjectURL(content);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'compressed-images.zip';
+        // New naming: webper_compressed_timedate.zip
+        a.download = `webper_compressed_${timestamp}.zip`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -123,14 +141,14 @@ export default function Home() {
     setIsCompressing(true);
     setStatus('processing');
 
-    // Track completed files for auto-download
-    const processedFiles: FileItem[] = [];
+    // Track completed files for auto-download (ONLY new ones)
+    const newlyCompressedFiles: FileItem[] = [];
 
     // Process files sequentially
     for (let i = 0; i < files.length; i++) {
       const fileItem = files[i];
       if (fileItem.status === 'done') {
-        processedFiles.push(fileItem);
+        // Skip already finished files for compression AND auto-download
         continue;
       }
 
@@ -156,7 +174,7 @@ export default function Home() {
           blob: blob,
         };
 
-        processedFiles.push(updatedFileItem);
+        newlyCompressedFiles.push(updatedFileItem);
 
         setFiles((prev) =>
           prev.map((f) =>
@@ -177,14 +195,14 @@ export default function Home() {
     setStatus('success');
     toast.success('Compression completed!');
 
-    // Auto download
-    const successfulFiles = processedFiles.filter(f => f.status === 'done');
-    if (successfulFiles.length > 0) {
-      downloadFiles(successfulFiles);
+    // Auto download ONLY newly processed files
+    if (newlyCompressedFiles.length > 0) {
+      downloadFiles(newlyCompressedFiles);
     }
   };
 
   const downloadAll = () => {
+    // Manual download gets ALL finished files
     const completedFiles = files.filter((f) => f.status === 'done');
     downloadFiles(completedFiles);
   };
@@ -249,60 +267,82 @@ export default function Home() {
       <div className="w-full max-w-6xl mx-auto flex flex-col gap-8">
         <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
           {/* Main Content */}
+
+          {/* Main Content */}
           <div className="lg:col-start-1 lg:row-start-1 space-y-6 w-full min-w-0">
             <Dropzone onFilesDrop={handleFilesDrop} />
 
-            {/* Download Button Area */}
-            {files.some(f => f.status === 'done') && (
-              <div className="flex justify-center py-6">
-                <Button
-                  size="lg"
-                  className="w-full md:w-auto min-w-[240px] bg-white text-black hover:bg-zinc-200 border-none rounded-full h-14 text-lg font-bold shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
-                  onClick={downloadAll}
-                >
-                  {files.filter(f => f.status === 'done').length > 1 ? 'Download All (ZIP)' : 'Download Image'}
+            {(queueFiles.length > 0 || finishedFiles.length > 0) && (
+              <div className="flex items-center justify-between px-2">
+                <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-wider"> Files ({files.length})</h3>
+                <Button variant="ghost" size="sm" onClick={clearAll} className="text-zinc-500 hover:text-red-400 h-auto p-0 hover:bg-transparent">
+                  Clear all
                 </Button>
               </div>
             )}
 
-            {/* File List */}
-            <div className="space-y-4">
-              {files.length > 0 && (
-                <div className="flex items-center justify-between px-2">
-                  <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Queue ({files.length})</h3>
-                  <Button variant="ghost" size="sm" onClick={clearAll} className="text-zinc-500 hover:text-red-400 h-auto p-0 hover:bg-transparent">
-                    Clear all
-                  </Button>
+            {/* Queue List */}
+            {queueFiles.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xs font-bold text-zinc-600 uppercase tracking-wider px-2">Queue ({queueFiles.length})</h3>
+
+                {/* Mobile Horizontal Scroll */}
+                <div className="md:hidden w-full overflow-x-auto pb-4 -mx-4 px-4 snap-x flex gap-4">
+                  <AnimatePresence mode="popLayout">
+                    {queueFiles.map((file) => (
+                      <div key={file.id} className="min-w-[280px] snap-center">
+                        <FileCard file={file} onRemove={handleRemoveFile} />
+                      </div>
+                    ))}
+                  </AnimatePresence>
                 </div>
-              )}
 
-              {/* Mobile Horizontal Scroll */}
-              <div className="md:hidden w-full overflow-x-auto pb-4 -mx-4 px-4 snap-x flex gap-4">
-                <AnimatePresence mode="popLayout">
-                  {files.map((file) => (
-                    <div key={file.id} className="min-w-[280px] snap-center">
-                      <FileCard file={file} onRemove={handleRemoveFile} />
-                    </div>
-                  ))}
-                </AnimatePresence>
+                {/* Desktop List */}
+                <div className="hidden md:flex flex-col gap-3">
+                  <AnimatePresence mode="popLayout">
+                    {queueFiles.map((file) => (
+                      <FileCard key={file.id} file={file} onRemove={handleRemoveFile} />
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
+            )}
 
-              {/* Desktop List */}
-              <div className="hidden md:flex flex-col gap-3">
-                <AnimatePresence mode="popLayout">
-                  {files.map((file) => (
-                    <FileCard key={file.id} file={file} onRemove={handleRemoveFile} />
-                  ))}
-                </AnimatePresence>
+            {/* Finished List */}
+            {finishedFiles.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                <h3 className="text-xs font-bold text-green-500/80 uppercase tracking-wider px-2 flex items-center gap-2">
+                  Finished ({finishedFiles.length})
+                </h3>
+
+                {/* Mobile Horizontal Scroll */}
+                <div className="md:hidden w-full overflow-x-auto pb-4 -mx-4 px-4 snap-x flex gap-4">
+                  <AnimatePresence mode="popLayout">
+                    {finishedFiles.map((file) => (
+                      <div key={file.id} className="min-w-[280px] snap-center">
+                        <FileCard file={file} onRemove={handleRemoveFile} />
+                      </div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+
+                {/* Desktop List */}
+                <div className="hidden md:flex flex-col gap-3">
+                  <AnimatePresence mode="popLayout">
+                    {finishedFiles.map((file) => (
+                      <FileCard key={file.id} file={file} onRemove={handleRemoveFile} />
+                    ))}
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Mobile Controls */}
             <div className="lg:hidden space-y-4 pt-4">
               <Button
                 size="lg"
-                className="w-full bg-white text-black hover:bg-zinc-200 rounded-xl h-14 text-base font-bold"
-                onClick={startCompression}
+                className="w-full bg-white text-black hover:bg-zinc-200 rounded-xl h-14 text-base font-bold transition-all"
+                onClick={queueFiles.length > 0 ? startCompression : downloadAll}
                 disabled={files.length === 0 || isCompressing}
               >
                 {isCompressing ? (
@@ -311,7 +351,9 @@ export default function Home() {
                     Compressing...
                   </span>
                 ) : (
-                  files.length > 0 ? `Compress ${files.length} Images` : 'Start Compressing'
+                  queueFiles.length > 0
+                    ? `Compress ${queueFiles.length} Images`
+                    : (finishedFiles.length > 0 ? 'Download All (ZIP)' : 'Start Compressing')
                 )}
               </Button>
 
@@ -350,7 +392,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   className="w-full bg-white text-black hover:bg-zinc-200 border-none rounded-lg h-12 text-sm font-bold transition-all shadow-[0_0_20px_-5px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.4)]"
-                  onClick={startCompression}
+                  onClick={queueFiles.length > 0 ? startCompression : downloadAll}
                   disabled={files.length === 0 || isCompressing}
                 >
                   {isCompressing ? (
@@ -359,12 +401,15 @@ export default function Home() {
                       Processing...
                     </span>
                   ) : (
-                    files.length > 0 ? `Compress ${files.length} Images` : 'Start Compression'
+                    queueFiles.length > 0
+                      ? `Compress ${queueFiles.length} Images`
+                      : (finishedFiles.length > 0 ? 'Download All' : 'Start Compression')
                   )}
                 </Button>
               </div>
             </div>
           </div>
+
         </div>
       </div>
       <Footer />

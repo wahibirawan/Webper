@@ -1,4 +1,3 @@
-import UPNG from 'upng-js';
 
 export interface CompressionOptions {
     quality: number; // 0 to 100
@@ -15,7 +14,7 @@ export async function compressImage(
         const img = new Image();
         const url = URL.createObjectURL(file);
 
-        img.onload = () => {
+        img.onload = async () => {
             URL.revokeObjectURL(url);
 
             try {
@@ -60,6 +59,7 @@ export async function compressImage(
 
                     // Encode using UPNG
                     // UPNG.encode expects array of ArrayBuffers (frames). We have 1 frame.
+                    const UPNG = (await import('upng-js')).default;
                     const pngBuffer = UPNG.encode([imageData.data.buffer], width, height, cnum);
                     const blob = new Blob([pngBuffer], { type: 'image/png' });
                     resolve(blob);

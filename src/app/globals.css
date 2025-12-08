@@ -69,6 +69,15 @@
   body {
     @apply bg-background text-foreground font-sans antialiased selection:bg-white/20 selection:text-white;
   }
+
+  /* Force pointer cursor on interactive elements */
+  button, 
+  [role="button"],
+  a,
+  input[type="submit"],
+  input[type="button"] {
+    cursor: pointer !important;
+  }
 }
 
 @layer utilities {

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload, FileImage } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,33 @@ export function Dropzone({ onFilesDrop }: DropzoneProps) {
         },
         [onFilesDrop]
     );
+
+    useEffect(() => {
+        const handlePaste = (e: ClipboardEvent) => {
+            if (e.clipboardData && e.clipboardData.items) {
+                const items = Array.from(e.clipboardData.items);
+                const files: File[] = [];
+
+                items.forEach((item) => {
+                    if (item.kind === 'file' && item.type.startsWith('image/')) {
+                        const file = item.getAsFile();
+                        if (file) {
+                            files.push(file);
+                        }
+                    }
+                });
+
+                if (files.length > 0) {
+                    // Prevent default paste behavior if we found images
+                    e.preventDefault();
+                    onFilesDrop(files);
+                }
+            }
+        };
+
+        window.addEventListener('paste', handlePaste);
+        return () => window.removeEventListener('paste', handlePaste);
+    }, [onFilesDrop]);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,

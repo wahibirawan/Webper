@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Coffee, Menu, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,14 +33,15 @@ export function Navbar() {
                     )}
                 >
                     <div className="flex items-center gap-8">
-                        <Link href="/" className="font-bold text-lg tracking-tight text-white flex items-center gap-2">
-                            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-black">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M12 3v19" />
-                                    <path d="M5 10l7 7 7-7" />
-                                </svg>
-                            </div>
-                            Webper
+                        <Link href="/" className="flex items-center gap-2">
+                            <Image
+                                src="/webper-logo.png"
+                                alt="Webper"
+                                width={120}
+                                height={40}
+                                priority
+                                className="h-8 w-auto object-contain"
+                            />
                         </Link>
                         <div className="hidden md:flex items-center gap-6">
                             <Link href="/about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">About</Link>
@@ -55,7 +57,7 @@ export function Navbar() {
                         >
                             <a href="https://buymeacoffee.com/wahibirawan" target="_blank" rel="noopener noreferrer">
                                 <Coffee className="w-4 h-4" />
-                                <span>Support</span>
+                                <span className="text-sm font-semibold">Buy me a coffee</span>
                             </a>
                         </Button>
 
