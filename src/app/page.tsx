@@ -14,6 +14,7 @@ import { Navbar } from '@/components/navbar';
 import { Announcement } from '@/components/announcement';
 import { Footer } from '@/components/footer';
 import { cn } from '@/lib/utils';
+import { detectMetadata } from '@/lib/metadata';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { BackgroundBeams } from "@/components/ui/background-beams";
@@ -24,9 +25,9 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [settings, setSettings] = useState<SettingsState>({
     quality: 80,
-    maxWidth: 0,
-    maxHeight: 0,
+    targetSize: undefined,
     stripMetadata: true,
+    keepOriginalFilename: false,
     format: 'image/webp',
   });
   const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
@@ -36,16 +37,22 @@ export default function Home() {
   const queueFiles = files.filter(f => f.status !== 'done');
   const finishedFiles = files.filter(f => f.status === 'done');
 
-  const handleFilesDrop = useCallback((newFiles: File[]) => {
-    const newFileItems: FileItem[] = newFiles.map((file) => ({
-      id: Math.random().toString(36).substring(7),
-      file,
-      preview: URL.createObjectURL(file),
-      status: 'queued' as const,
-      progress: 0,
-      originalSize: file.size,
+  const handleFilesDrop = useCallback(async (newFiles: File[]) => {
+    // Determine metadata for all files
+    const newFileItemsWithMetadata = await Promise.all(newFiles.map(async (file) => {
+      const metadata = await detectMetadata(file);
+      return {
+        id: Math.random().toString(36).substring(7),
+        file,
+        preview: URL.createObjectURL(file),
+        status: 'queued' as const,
+        progress: 0,
+        originalSize: file.size,
+        metadata,
+      };
     }));
-    setFiles((prev) => [...prev, ...newFileItems]);
+
+    setFiles((prev) => [...prev, ...newFileItemsWithMetadata]);
     setStatus('idle');
   }, []);
 
@@ -99,8 +106,14 @@ export default function Home() {
       const a = document.createElement('a');
       a.href = url;
       const ext = getExtension(file.blob.type);
-      // New naming: webper_timedate.ext
-      a.download = `webper_${timestamp}.${ext}`;
+
+      let filename = `webper_${timestamp}.${ext}`;
+      if (settings.keepOriginalFilename) {
+        const originalName = file.file.name.replace(/\.[^/.]+$/, "");
+        filename = `${originalName}.${ext}`;
+      }
+
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -112,14 +125,23 @@ export default function Home() {
       filesToDownload.forEach((f, index) => {
         if (f.blob) {
           const ext = getExtension(f.blob.type);
-          // Ensure unique names in zip if multiple files are processed at same second (unlikely to clash but good practice)
-          // Actually, let's keep original names inside zip or use formatted names? 
-          // User asked for "naming hasil compress dan zip". 
-          // Usually inside zip people prefer original names or a standard convention.
-          // Let's stick to the user's requested format for the ZIP file itself, 
-          // and for files inside, unique names are safer.
-          // Usage: webper_timedate_index.ext to avoid collisions
-          zip.file(`webper_${timestamp}_${index + 1}.${ext}`, f.blob);
+
+          let filename = `webper_${timestamp}_${index + 1}.${ext}`;
+          if (settings.keepOriginalFilename) {
+            const originalName = f.file.name.replace(/\.[^/.]+$/, "");
+            filename = `${originalName}.${ext}`;
+          }
+
+          // Handle duplicate names in zip to prevent overwriting
+          let finalFilename = filename;
+          let counter = 1;
+          while (zip.file(finalFilename)) {
+            const namePart = filename.replace(/\.[^/.]+$/, "");
+            finalFilename = `${namePart}_${counter}.${ext}`;
+            counter++;
+          }
+
+          zip.file(finalFilename, f.blob);
         }
       });
 
@@ -161,9 +183,8 @@ export default function Home() {
       try {
         const blob = await compressImage(fileItem.file, {
           quality: settings.quality,
-          maxWidth: settings.maxWidth || undefined,
-          maxHeight: settings.maxHeight || undefined,
           format: settings.format,
+          targetSizeKB: settings.targetSize,
         });
 
         const updatedFileItem: FileItem = {

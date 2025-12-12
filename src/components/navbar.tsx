@@ -35,8 +35,8 @@ export function Navbar() {
                     <div className="flex items-center gap-8">
                         <Link href="/" className="flex items-center gap-2">
                             <Image
-                                src="/webper-logo.png"
-                                alt="Webper"
+                                src="/webper-logo.svg"
+                                alt="Webper Logo"
                                 width={120}
                                 height={40}
                                 priority

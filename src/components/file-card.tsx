@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { X, FileIcon } from 'lucide-react';
+import { X, FileIcon, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -15,6 +15,7 @@ export interface FileItem {
     compressedSize?: number;
     error?: string;
     blob?: Blob;
+    metadata?: string[];
 }
 
 interface FileCardProps {
@@ -79,6 +80,27 @@ export function FileCard({ file, onRemove }: FileCardProps) {
 
                     {file.status === 'error' && (
                         <span className="text-red-400">Error</span>
+                    )}
+
+                    {/* Privacy Report */}
+                    {file.metadata && file.metadata.length > 0 && (
+                        <div className="flex items-center gap-1.5 ml-auto">
+                            {file.status === 'done' ? (
+                                <>
+                                    <Shield className="w-3 h-3 text-green-500" />
+                                    <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider hidden sm:inline-block">
+                                        Privacy Safe
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <Shield className="w-3 h-3 text-yellow-500" />
+                                    <span className="text-[10px] text-yellow-500 font-bold uppercase tracking-wider hidden sm:inline-block">
+                                        Metadata Detected
+                                    </span>
+                                </>
+                            )}
+                        </div>
                     )}
                 </div>
 

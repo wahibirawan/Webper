@@ -7,9 +7,9 @@ import { Card } from '@/components/ui/card';
 
 export interface SettingsState {
     quality: number;
-    maxWidth: number;
-    maxHeight: number;
+    targetSize?: number;
     stripMetadata: boolean;
+    keepOriginalFilename: boolean;
     format: 'image/webp' | 'image/png' | 'image/jpeg';
 }
 
@@ -79,32 +79,26 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
 
             <div className="h-px bg-white/5 w-full" />
 
-            {/* Dimensions Section */}
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-3">
-                    <Label htmlFor="maxWidth" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Max Width</Label>
+            {/* Target Size Section */}
+            <div className="space-y-3">
+                <Label htmlFor="targetSize" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Target File Size (KB)</Label>
+                <div className="relative">
                     <Input
-                        id="maxWidth"
-                        name="maxWidth"
+                        id="targetSize"
+                        name="targetSize"
                         type="number"
-                        placeholder="Auto"
-                        value={settings.maxWidth || ''}
+                        placeholder="Optional (e.g., 500)"
+                        value={settings.targetSize || ''}
                         onChange={handleInputChange}
-                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600"
+                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600 pl-3 pr-10"
                     />
+                    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <span className="text-xs text-zinc-500 font-mono">KB</span>
+                    </div>
                 </div>
-                <div className="space-y-3">
-                    <Label htmlFor="maxHeight" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Max Height</Label>
-                    <Input
-                        id="maxHeight"
-                        name="maxHeight"
-                        type="number"
-                        placeholder="Auto"
-                        value={settings.maxHeight || ''}
-                        onChange={handleInputChange}
-                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600"
-                    />
-                </div>
+                <p className="text-[10px] text-zinc-500">
+                    Auto-adjust quality to meet target. Leaves blank for quality-based.
+                </p>
             </div>
 
             <div className="h-px bg-white/5 w-full" />
@@ -118,6 +112,20 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                 <Switch
                     checked={settings.stripMetadata}
                     onCheckedChange={handleSwitchChange}
+                />
+            </div>
+
+            <div className="h-px bg-white/5 w-full" />
+
+            {/* Filename Section */}
+            <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                    <Label className="text-sm font-medium text-white">Keep Original Filename</Label>
+                    <p className="text-xs text-zinc-500">Preserve name instead of renaming</p>
+                </div>
+                <Switch
+                    checked={settings.keepOriginalFilename}
+                    onCheckedChange={(checked) => onSettingsChange({ ...settings, keepOriginalFilename: checked })}
                 />
             </div>
         </Card>
