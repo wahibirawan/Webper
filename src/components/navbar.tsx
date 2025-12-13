@@ -45,6 +45,7 @@ export function Navbar() {
                         </Link>
                         <div className="hidden md:flex items-center gap-6">
                             <Link href="/about" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">About</Link>
+                            <Link href="/base64" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Image to Base64</Link>
                             <Link href="/how-to-use" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">How to Use</Link>
                         </div>
                     </div>
@@ -97,6 +98,9 @@ export function Navbar() {
                         <div className="flex flex-col gap-8 flex-1">
                             <Link href="/about" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
                                 About
+                            </Link>
+                            <Link href="/base64" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
+                                Image to Base64
                             </Link>
                             <Link href="/how-to-use" className="text-3xl font-medium text-zinc-400 hover:text-white transition-colors" onClick={() => setIsOpen(false)}>
                                 How to Use
