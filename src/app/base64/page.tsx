@@ -22,6 +22,7 @@ export interface Base64Item {
     status: 'processing' | 'done' | 'error';
     originalSize: number;
     compressedSize?: number;
+    blob?: Blob;
 }
 
 export default function Base64Page() {
@@ -46,7 +47,7 @@ export default function Base64Page() {
         const newItems: Base64Item[] = newFiles.map(file => ({
             id: Math.random().toString(36).substring(7),
             file,
-            preview: URL.createObjectURL(file),
+            preview: URL.createObjectURL(file), // Initially verify original
             base64: null,
             status: 'processing',
             originalSize: file.size
@@ -74,7 +75,8 @@ export default function Base64Page() {
                             status: 'done',
                             base64: base64String,
                             preview: webpUrl,
-                            compressedSize: webpBlob.size
+                            compressedSize: webpBlob.size,
+                            blob: webpBlob
                         };
                     }
                     return i;
@@ -100,6 +102,21 @@ export default function Base64Page() {
         }
     };
 
+    const copyHtml = async (base64: string, filename: string) => {
+        try {
+            const imgTag = `<img src="${base64}" alt="${filename}" />`;
+            await navigator.clipboard.writeText(imgTag);
+            toast.success('HTML copied to clipboard!', { position: 'bottom-center' });
+        } catch (err) {
+            toast.error('Failed to copy HTML');
+        }
+    };
+
+    const clearAll = () => {
+        items.forEach(item => URL.revokeObjectURL(item.preview));
+        setItems([]);
+    };
+
     const removeItem = (id: string) => {
         setItems(prev => {
             const item = prev.find(i => i.id === id);
@@ -115,92 +132,124 @@ export default function Base64Page() {
                 <BackgroundBeams />
             </div>
 
-            <div className="relative z-10 pt-24 pb-12 w-full max-w-4xl mx-auto space-y-8 px-4">
-                <div className="text-center space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white">
+            <div className="relative z-10 pt-20 pb-12 w-full max-w-5xl mx-auto space-y-6 px-4">
+                <div className="text-center space-y-2 mb-8">
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-white">
                         Image to <span className="text-green-400">Base64</span>
                     </h1>
-                    <p className="text-zinc-400 max-w-xl mx-auto">
-                        Convert any image to an optimized WebP Base64 string instantly. Perfect for embedding small images directly into code.
+                    <p className="text-zinc-400 max-w-lg mx-auto text-sm">
+                        Convert images to optimized WebP Base64 instantly.
                     </p>
                 </div>
 
-                <div className="bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 md:p-8">
-                    <Dropzone onFilesDrop={handleFilesDrop} />
-                </div>
+                <div className="grid gap-6">
+                    <div className="bg-black/50 backdrop-blur-xl border border-white/10 rounded-2xl p-4 md:p-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wider">Upload</h2>
+                            {items.length > 0 && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={clearAll}
+                                    className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-8 px-2 text-xs"
+                                >
+                                    <X className="w-3 h-3 mr-1.5" />
+                                    Clear All
+                                </Button>
+                            )}
+                        </div>
+                        <Dropzone onFilesDrop={handleFilesDrop} />
+                    </div>
 
-                <div className="space-y-4">
-                    <AnimatePresence mode="popLayout">
-                        {items.map((item) => (
-                            <motion.div
-                                key={item.id}
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="bg-zinc-900/50 border border-white/10 rounded-xl p-4 flex flex-col md:flex-row gap-6"
-                            >
-                                {/* Preview */}
-                                <div className="relative w-full md:w-32 h-32 shrink-0 bg-black/50 rounded-lg overflow-hidden border border-white/5">
-                                    <Image
-                                        src={item.preview}
-                                        alt={item.file.name}
-                                        fill
-                                        className="object-contain"
-                                    />
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1 min-w-0 space-y-4">
-                                    <div className="flex items-start justify-between">
-                                        <div>
-                                            <h3 className="font-medium text-white truncate max-w-[200px] md:max-w-md">
-                                                {item.file.name}
-                                            </h3>
-                                            <div className="flex gap-2 text-xs text-zinc-500 font-mono mt-1">
-                                                <span>{(item.originalSize / 1024).toFixed(1)}KB</span>
-                                                <span>→</span>
-                                                <span className={cn(
-                                                    "font-bold",
-                                                    item.compressedSize && item.compressedSize < item.originalSize ? "text-green-400" : "text-white"
-                                                )}>
-                                                    {item.compressedSize ? `${(item.compressedSize / 1024).toFixed(1)}KB` : '...'}
-                                                </span>
-                                                <span className="text-zinc-600">• WebP</span>
-                                            </div>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => removeItem(item.id)}
-                                            className="text-zinc-500 hover:text-red-400"
-                                        >
-                                            <X className="w-5 h-5" />
-                                        </Button>
+                    <div className="space-y-3">
+                        <AnimatePresence mode="popLayout">
+                            {items.map((item) => (
+                                <motion.div
+                                    key={item.id}
+                                    layout
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    className="bg-zinc-900/80 border border-white/10 rounded-lg p-3 flex gap-4 group"
+                                >
+                                    {/* Compact Preview */}
+                                    <div className="relative w-20 h-20 shrink-0 bg-black/50 rounded-md overflow-hidden border border-white/5">
+                                        <Image
+                                            src={item.preview}
+                                            alt={item.file.name}
+                                            fill
+                                            className="object-contain"
+                                        />
                                     </div>
 
-                                    {item.status === 'done' && item.base64 && (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="bg-black/50 rounded-lg p-3 font-mono text-[10px] text-zinc-500 break-all h-20 overflow-hidden relative group">
-                                                {item.base64.substring(0, 300)}...
-                                                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/90 to-transparent pointer-events-none" />
+                                    {/* Content */}
+                                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="min-w-0">
+                                                <h3 className="font-medium text-sm text-white truncate" title={item.file.name}>
+                                                    {item.file.name}
+                                                </h3>
+                                                {item.status === 'done' ? (
+                                                    <div className="flex items-center gap-2 text-[10px] text-zinc-500 font-mono mt-0.5">
+                                                        <span>{(item.originalSize / 1024).toFixed(1)}KB</span>
+                                                        <span className="text-zinc-600">→</span>
+                                                        <span className={cn(
+                                                            "font-bold",
+                                                            item.compressedSize && item.compressedSize < item.originalSize ? "text-green-400" : "text-white"
+                                                        )}>
+                                                            {item.compressedSize ? `${(item.compressedSize / 1024).toFixed(1)}KB` : '...'}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-[10px] text-zinc-500 font-mono mt-0.5 animate-pulse">
+                                                        Processing...
+                                                    </p>
+                                                )}
                                             </div>
-
-                                            <div className="flex gap-3">
-                                                <Button
-                                                    className="flex-1 bg-white text-black hover:bg-zinc-200"
-                                                    onClick={() => copyToClipboard(item.base64!)}
-                                                >
-                                                    <Copy className="w-4 h-4 mr-2" />
-                                                    Copy Base64
-                                                </Button>
-                                            </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => removeItem(item.id)}
+                                                className="h-6 w-6 -mt-1 -mr-1 text-zinc-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X className="w-3.5 h-3.5" />
+                                            </Button>
                                         </div>
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))}
-                    </AnimatePresence>
+
+                                        {item.status === 'done' && item.base64 && (
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <div className="flex-1 bg-black/40 rounded px-2 py-1.5 font-mono text-[10px] text-zinc-500 truncate select-all">
+                                                    {item.base64.substring(0, 50)}...
+                                                </div>
+
+                                                <div className="flex gap-2 shrink-0">
+                                                    <Button
+                                                        size="sm"
+                                                        variant="secondary"
+                                                        className="h-7 px-2.5 text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                                                        onClick={() => copyHtml(item.base64!, item.file.name)}
+                                                        title="Copy <img> tag for Blogger/HTML"
+                                                    >
+                                                        <Copy className="w-3 h-3 mr-1.5" />
+                                                        HTML
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        className="h-7 px-2.5 text-xs bg-white text-black hover:bg-zinc-200"
+                                                        onClick={() => copyToClipboard(item.base64!)}
+                                                        title="Copy Base64 String"
+                                                    >
+                                                        <Copy className="w-3 h-3 mr-1.5" />
+                                                        Base64
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </div>
             <Footer />

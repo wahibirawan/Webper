@@ -187,12 +187,16 @@ export default function Home() {
           targetSizeKB: settings.targetSize,
         });
 
+        const newPreviewUrl = URL.createObjectURL(blob);
+        URL.revokeObjectURL(fileItem.preview);
+
         const updatedFileItem: FileItem = {
           ...fileItem,
           status: 'done',
           progress: 100,
           compressedSize: blob.size,
           blob: blob,
+          preview: newPreviewUrl,
         };
 
         newlyCompressedFiles.push(updatedFileItem);
