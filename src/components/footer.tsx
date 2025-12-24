@@ -5,8 +5,8 @@ import Link from 'next/link';
 
 export function Footer() {
     return (
-        <footer className="w-full py-16 mt-24 border-t border-white/5 bg-black">
-            <div className="container mx-auto px-6 grid md:grid-cols-4 gap-12">
+        <footer className="w-full py-10 md:py-16 mt-12 md:mt-24 border-t border-white/5 bg-black">
+            <div className="container mx-auto px-4 md:px-6 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
                 <div className="col-span-2 space-y-4">
                     <h3 className="font-bold text-xl tracking-tight text-white">Webper</h3>
                     <p className="text-sm text-zinc-500 max-w-xs">

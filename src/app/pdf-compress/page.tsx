@@ -258,8 +258,9 @@ export default function GenericPDFTools() {
                                         <p className="text-zinc-400 text-sm">
                                             {activeTab === 'merge' ? 'Select multiple files to combine' : 'Select a single file'}
                                         </p>
-                                        <div className="mt-4 inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-300 font-medium uppercase tracking-wider shadow-[0_0_10px_-4px_rgba(59,130,246,0.5)]">
-                                            Tip: You can use Ctrl+V to paste files
+                                        <div className="mt-4 inline-block px-3 md:px-4 py-1.5 md:py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[11px] md:text-xs text-blue-300 font-medium uppercase tracking-wider shadow-[0_0_10px_-4px_rgba(59,130,246,0.5)] leading-relaxed">
+                                            <span className="hidden md:inline">Tip: You can use Ctrl+V to paste files</span>
+                                            <span className="md:hidden">Tip: Paste files with long press</span>
                                         </div>
                                     </div>
                                 ) : (

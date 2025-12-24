@@ -70,6 +70,17 @@
     @apply bg-background text-foreground font-sans antialiased selection:bg-white/20 selection:text-white;
   }
 
+  /* Ensure bold font weight renders correctly on all devices */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .font-bold {
+    font-weight: 700 !important;
+  }
+
   /* Force pointer cursor on interactive elements */
   button, 
   [role="button"],
