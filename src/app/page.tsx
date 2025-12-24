@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Shell } from '@/components/shell';
 import { Dropzone } from '@/components/dropzone';
 import { FileCard, FileItem } from '@/components/file-card';
@@ -8,7 +8,7 @@ import { CompressionSettings, SettingsState } from '@/components/compression-set
 import { compressImage } from '@/lib/compressor';
 import { Button } from '@/components/ui/button';
 import NextImage from 'next/image';
-import { Download, X, Shield, FileIcon, Settings } from 'lucide-react';
+import { Download, X, Shield, FileIcon, Settings, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { Navbar } from '@/components/navbar';
 import { Announcement } from '@/components/announcement';
@@ -55,6 +55,21 @@ export default function Home() {
     setFiles((prev) => [...prev, ...newFileItemsWithMetadata]);
     setStatus('idle');
   }, []);
+
+  // Global Paste Handler (Moved here to access handleFilesDrop)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (e.clipboardData && e.clipboardData.files.length > 0) {
+        const pastedFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
+        if (pastedFiles.length > 0) {
+          handleFilesDrop(pastedFiles);
+          toast.success('Image pasted from clipboard!');
+        }
+      }
+    };
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, [handleFilesDrop]);
 
   const handleRemoveFile = useCallback((id: string) => {
     setFiles((prev) => {
@@ -295,7 +310,22 @@ export default function Home() {
 
           {/* Main Content */}
           <div className="lg:col-start-1 lg:row-start-1 space-y-6 w-full min-w-0">
-            <Dropzone onFilesDrop={handleFilesDrop} />
+            <Dropzone onFilesDrop={handleFilesDrop}>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto mb-4 hover:scale-110 hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.5)] transition-all duration-300">
+                  <Upload className="w-8 h-8 text-black" />
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">
+                  Click to select, drag & drop, or paste images
+                </h3>
+                <p className="text-zinc-400 text-sm">
+                  Supports JPG, PNG, and WebP up to 50MB
+                </p>
+                <div className="mt-4 inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-300 font-medium uppercase tracking-wider shadow-[0_0_10px_-4px_rgba(59,130,246,0.5)]">
+                  Tip: You can use Ctrl+V to paste images
+                </div>
+              </div>
+            </Dropzone>
 
             {(queueFiles.length > 0 || finishedFiles.length > 0) && (
               <div className="flex items-center justify-between px-2">

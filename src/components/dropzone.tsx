@@ -6,9 +6,10 @@ import { motion } from 'framer-motion';
 
 interface DropzoneProps {
     onFilesDrop: (files: File[]) => void;
+    children?: React.ReactNode;
 }
 
-export function Dropzone({ onFilesDrop }: DropzoneProps) {
+export function Dropzone({ onFilesDrop, children }: DropzoneProps) {
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
             if (acceptedFiles?.length > 0) {
@@ -48,42 +49,54 @@ export function Dropzone({ onFilesDrop }: DropzoneProps) {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
-            'image/*': ['.png', '.jpg', '.jpeg', '.webp'],
+            'image/jpeg': [],
+            'image/png': [],
+            'image/webp': []
         },
+        noClick: false // Allow clicking
     });
 
     return (
-        <div className="w-full">
-            <div
-                {...getRootProps()}
-                className={cn(
-                    "relative group cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-zinc-700 bg-zinc-900/50 transition-all duration-300 hover:border-zinc-500 hover:bg-zinc-900/80",
-                    isDragActive && "border-white/50 bg-zinc-900/90 ring-1 ring-white/20"
-                )}
-            >
-                <input {...getInputProps()} />
-                <div className="flex flex-col items-center justify-center gap-4 py-16 px-4 text-center">
-                    <div className={cn(
-                        "p-4 rounded-full bg-white border border-white transition-transform duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.5)]",
-                        isDragActive && "scale-110 shadow-[0_0_30px_-5px_rgba(255,255,255,0.6)]"
-                    )}>
-                        <Upload className="w-8 h-8 text-black" />
+        <div
+            {...getRootProps()}
+            className={cn(
+                "relative border-2 border-dashed rounded-xl p-8 transition-all duration-200 cursor-pointer group hover:border-blue-500/50 hover:bg-blue-500/5",
+                isDragActive ? "border-blue-500 bg-blue-500/10" : "border-zinc-800 bg-black/20"
+            )}
+        >
+            <input {...getInputProps()} />
+
+            {/* If children provided, render them. Otherwise default UI */}
+            {children ? (
+                children
+            ) : (
+                <div className="flex flex-col items-center justify-center text-center space-y-4">
+                    <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Upload className="w-6 h-6 text-zinc-400 group-hover:text-blue-400" />
                     </div>
-                    <div className="space-y-2">
-                        <h3 className="text-xl font-bold text-white tracking-tight">
-                            {isDragActive ? "Drop files now" : "Upload Files"}
-                        </h3>
-                        <p className="text-sm text-zinc-400 font-mono">
-                            Support multiple files (JPG, PNG, WEBP)
+                    <div className="space-y-1">
+                        <p className="text-sm font-medium text-zinc-300">
+                            Drop images here or click to upload
+                        </p>
+                        <p className="text-xs text-zinc-500">
+                            Supports JPG, PNG, WebP up to 50MB
                         </p>
                     </div>
-                    <div className="flex gap-2 mt-2 opacity-50">
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">JPG</span>
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">PNG</span>
-                        <span className="px-2 py-1 rounded text-[10px] font-mono bg-zinc-800 border border-zinc-700 text-zinc-300">WEBP</span>
-                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* Overlay for drag state */}
+            {isDragActive && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-500/20 backdrop-blur-sm rounded-xl">
+                    <motion.div
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium shadow-lg"
+                    >
+                        Drop files now!
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 }

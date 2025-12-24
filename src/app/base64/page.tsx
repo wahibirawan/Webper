@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Shell } from '@/components/shell';
 import { Dropzone } from '@/components/dropzone';
 import { Navbar } from '@/components/navbar';
@@ -93,6 +93,21 @@ export default function Base64Page() {
         }
     }, []);
 
+    // Global Paste Handler
+    useEffect(() => {
+        const handlePaste = (e: ClipboardEvent) => {
+            if (e.clipboardData && e.clipboardData.files.length > 0) {
+                const pastedFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
+                if (pastedFiles.length > 0) {
+                    handleFilesDrop(pastedFiles);
+                    toast.success('Image pasted from clipboard!');
+                }
+            }
+        };
+        document.addEventListener('paste', handlePaste);
+        return () => document.removeEventListener('paste', handlePaste);
+    }, [handleFilesDrop]);
+
     const copyToClipboard = async (text: string) => {
         try {
             await navigator.clipboard.writeText(text);
@@ -158,7 +173,19 @@ export default function Base64Page() {
                                 </Button>
                             )}
                         </div>
-                        <Dropzone onFilesDrop={handleFilesDrop} />
+                        <Dropzone onFilesDrop={handleFilesDrop}>
+                            <div className="text-center py-8">
+                                <h3 className="text-lg font-semibold text-white mb-2">
+                                    Click to select, drag & drop, or paste images
+                                </h3>
+                                <p className="text-zinc-400 text-xs mb-3">
+                                    Supports JPG, PNG, and WebP
+                                </p>
+                                <div className="inline-block px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-300 font-medium uppercase tracking-wider shadow-[0_0_10px_-4px_rgba(59,130,246,0.5)]">
+                                    Tip: You can use Ctrl+V to paste images
+                                </div>
+                            </div>
+                        </Dropzone>
                     </div>
 
                     <div className="space-y-3">
