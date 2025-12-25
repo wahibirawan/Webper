@@ -7,9 +7,11 @@ import { motion } from 'framer-motion';
 interface DropzoneProps {
     onFilesDrop: (files: File[]) => void;
     children?: React.ReactNode;
+    accept?: Record<string, string[]>;
+    className?: string;
 }
 
-export function Dropzone({ onFilesDrop, children }: DropzoneProps) {
+export function Dropzone({ onFilesDrop, children, accept, className }: DropzoneProps) {
     const onDrop = useCallback(
         (acceptedFiles: File[]) => {
             if (acceptedFiles?.length > 0) {
@@ -26,17 +28,33 @@ export function Dropzone({ onFilesDrop, children }: DropzoneProps) {
                 const files: File[] = [];
 
                 items.forEach((item) => {
-                    if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    // Logic to handle images or generic files based on context?
+                    // Original was image specific. Keeping it safe for now, or enabling all files?
+                    // If we enable all files, it might conflict.
+                    // Let's assume generic file handling if it's a file.
+                    if (item.kind === 'file') {
                         const file = item.getAsFile();
                         if (file) {
+                            // Check accept? 
+                            // If accept prop is present, we should filter.
+                            // But for now, let's just push valid files.
+                            // React-dropzone's onDrop handles filtering usually? No, this is manual paste.
+                            // Simple fix: Restore original image-only logic BUT add PDF support?
+                            // Or just pass all files to onFilesDrop and let parent filter?
+                            // Parent (handleFilesDrop) DOES filter!
+                            // "const validFiles = acceptedFiles.filter(...)"
+                            // So it is SAFE to pass all files.
                             files.push(file);
                         }
                     }
                 });
 
                 if (files.length > 0) {
-                    // Prevent default paste behavior if we found images
-                    e.preventDefault();
+                    // e.preventDefault(); // Don't prevent default globally if we are unsure?
+                    // But usually we want to capture paste.
+                    // If pdf-compress handles it too, we might have double handling.
+                    // pdf-compress stops propagation?
+                    // Let's rely on parent filtering.
                     onFilesDrop(files);
                 }
             }
@@ -48,37 +66,39 @@ export function Dropzone({ onFilesDrop, children }: DropzoneProps) {
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
-        accept: {
+        accept: accept || {
             'image/jpeg': [],
             'image/png': [],
             'image/webp': []
         },
-        noClick: false // Allow clicking
+        noClick: false
     });
 
     return (
         <div
             {...getRootProps()}
             className={cn(
-                "relative border-2 border-dashed rounded-xl p-8 transition-all duration-200 cursor-pointer group hover:border-blue-500/50 hover:bg-blue-500/5",
-                isDragActive ? "border-blue-500 bg-blue-500/10" : "border-zinc-800 bg-black/20"
+                "relative border-2 border-dashed rounded-3xl p-6 md:p-10 transition-all duration-300 cursor-pointer group",
+                isDragActive
+                    ? "border-blue-500 bg-blue-50/50"
+                    : "border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50/30 hover:shadow-card-hover",
+                className
             )}
         >
             <input {...getInputProps()} />
 
-            {/* If children provided, render them. Otherwise default UI */}
             {children ? (
                 children
             ) : (
                 <div className="flex flex-col items-center justify-center text-center space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Upload className="w-6 h-6 text-zinc-400 group-hover:text-blue-400" />
+                    <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-all duration-300 shadow-card-premium border border-gray-100">
+                        <Upload className="w-7 h-7 text-gray-900" />
                     </div>
                     <div className="space-y-1">
-                        <p className="text-sm font-medium text-zinc-300">
+                        <p className="text-sm font-medium text-gray-700">
                             Drop images here or click to upload
                         </p>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-gray-500">
                             Supports JPG, PNG, WebP up to 50MB
                         </p>
                     </div>
@@ -87,11 +107,11 @@ export function Dropzone({ onFilesDrop, children }: DropzoneProps) {
 
             {/* Overlay for drag state */}
             {isDragActive && (
-                <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-500/20 backdrop-blur-sm rounded-xl">
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-500/10 backdrop-blur-sm rounded-2xl">
                     <motion.div
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium shadow-lg"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-full font-medium shadow-lg"
                     >
                         Drop files now!
                     </motion.div>

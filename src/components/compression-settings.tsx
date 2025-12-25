@@ -40,8 +40,8 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
         <Card className="flex flex-col gap-2 bg-transparent border-none shadow-none">
             {/* Format Section */}
             <div className="space-y-3">
-                <Label className="text-sm font-medium text-white">Output Format</Label>
-                <div className="grid grid-cols-3 gap-2 p-1 bg-zinc-900/80 rounded-lg border border-zinc-700">
+                <Label className="text-sm font-medium text-gray-900">Output Format</Label>
+                <div className="grid grid-cols-3 gap-2 p-1 bg-gray-100 rounded-lg border border-gray-200">
                     {(['image/webp', 'image/png', 'image/jpeg'] as const).map((fmt) => (
                         <button
                             key={fmt}
@@ -49,8 +49,8 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                             className={`
                                 py-2 px-3 rounded-md text-xs font-bold transition-all cursor-pointer
                                 ${settings.format === fmt
-                                    ? 'bg-white text-black shadow-sm'
-                                    : 'text-zinc-400 hover:text-white hover:bg-white/10'
+                                    ? 'bg-white text-gray-900 shadow-sm border border-gray-200'
+                                    : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'
                                 }
                             `}
                         >
@@ -60,13 +60,13 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                 </div>
             </div>
 
-            <div className="h-px bg-white/5 w-full" />
+            <div className="h-px bg-gray-200 w-full" />
 
             {/* Quality Section */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <Label className="text-sm font-medium text-white">Quality</Label>
-                    <span className="text-xs font-mono text-zinc-400 bg-white/5 px-2 py-1 rounded">{settings.quality}%</span>
+                    <Label className="text-sm font-medium text-gray-900">Quality</Label>
+                    <span className="text-xs font-mono text-gray-600 bg-gray-100 px-2 py-1 rounded">{settings.quality}%</span>
                 </div>
                 <Slider
                     value={[settings.quality]}
@@ -77,11 +77,11 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                 />
             </div>
 
-            <div className="h-px bg-white/5 w-full" />
+            <div className="h-px bg-gray-200 w-full" />
 
             {/* Target Size Section */}
             <div className="space-y-3">
-                <Label htmlFor="targetSize" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Target File Size (KB)</Label>
+                <Label htmlFor="targetSize" className="text-xs font-bold text-gray-500 uppercase tracking-wider">Target File Size (KB)</Label>
                 <div className="relative">
                     <Input
                         id="targetSize"
@@ -90,24 +90,24 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                         placeholder="Optional (e.g., 500)"
                         value={settings.targetSize || ''}
                         onChange={handleInputChange}
-                        className="font-mono text-sm bg-zinc-900 border-zinc-700 focus:border-white/40 focus:bg-black transition-colors placeholder:text-zinc-600 pl-3 pr-10"
+                        className="font-mono text-sm bg-white border-gray-300 focus:border-blue-500 focus:bg-white transition-colors placeholder:text-gray-400 pl-3 pr-10"
                     />
                     <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-                        <span className="text-xs text-zinc-500 font-mono">KB</span>
+                        <span className="text-xs text-gray-400 font-mono">KB</span>
                     </div>
                 </div>
-                <p className="text-[10px] text-zinc-500">
-                    Auto-adjust quality to meet target. Leaves blank for quality-based.
+                <p className="text-[10px] text-gray-500">
+                    Auto-adjust quality to meet target. Leave blank for quality-based.
                 </p>
             </div>
 
-            <div className="h-px bg-white/5 w-full" />
+            <div className="h-px bg-gray-200 w-full" />
 
             {/* Metadata Section */}
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                    <Label className="text-sm font-medium text-white">Strip Metadata</Label>
-                    <p className="text-xs text-zinc-500">Remove EXIF data to save space</p>
+                    <Label className="text-sm font-medium text-gray-900">Strip Metadata</Label>
+                    <p className="text-xs text-gray-500">Remove EXIF data to save space</p>
                 </div>
                 <Switch
                     checked={settings.stripMetadata}
@@ -115,13 +115,13 @@ export function CompressionSettings({ settings, onSettingsChange }: CompressionS
                 />
             </div>
 
-            <div className="h-px bg-white/5 w-full" />
+            <div className="h-px bg-gray-200 w-full" />
 
             {/* Filename Section */}
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                    <Label className="text-sm font-medium text-white">Keep Original Filename</Label>
-                    <p className="text-xs text-zinc-500">Preserve name instead of renaming</p>
+                    <Label className="text-sm font-medium text-gray-900">Keep Original Filename</Label>
+                    <p className="text-xs text-gray-500">Preserve name instead of renaming</p>
                 </div>
                 <Switch
                     checked={settings.keepOriginalFilename}

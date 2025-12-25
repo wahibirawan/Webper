@@ -38,9 +38,9 @@ export function FileCard({ file, onRemove }: FileCardProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="group relative flex items-center gap-4 p-3 rounded-lg border border-white/5 bg-white/5 hover:bg-white/10 transition-colors"
+            className="group relative flex items-center gap-4 p-3 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all"
         >
-            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black border border-white/10">
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-100 border border-gray-200">
                 {file.file.type.startsWith('image/') ? (
                     <Image
                         src={file.preview}
@@ -50,36 +50,36 @@ export function FileCard({ file, onRemove }: FileCardProps) {
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                        <FileIcon className="h-6 w-6 text-zinc-500" />
+                        <FileIcon className="h-6 w-6 text-gray-400" />
                     </div>
                 )}
             </div>
 
             <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-1">
-                    <p className="truncate text-sm font-medium text-white">
+                    <p className="truncate text-sm font-medium text-gray-900">
                         {file.file.name}
                     </p>
                     {file.status === 'done' && (
-                        <span className="text-xs font-mono text-green-400">
+                        <span className="text-xs font-mono text-green-600 font-semibold">
                             -{Math.round((1 - (file.compressedSize! / file.originalSize)) * 100)}%
                         </span>
                     )}
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-zinc-500 font-mono">
+                <div className="flex items-center justify-between text-xs text-gray-500 font-mono">
                     <span>{formatSize(file.originalSize)}</span>
                     {file.status === 'done' && (
-                        <span className="text-white">
+                        <span className="text-gray-900 font-medium">
                             {formatSize(file.compressedSize!)}
                         </span>
                     )}
                     {file.status === 'processing' && (
-                        <span className="text-zinc-400 animate-pulse">Processing...</span>
+                        <span className="text-blue-600 animate-pulse">Processing...</span>
                     )}
 
                     {file.status === 'error' && (
-                        <span className="text-red-400">Error</span>
+                        <span className="text-red-500">Error</span>
                     )}
 
                     {/* Privacy Report */}
@@ -87,15 +87,15 @@ export function FileCard({ file, onRemove }: FileCardProps) {
                         <div className="flex items-center gap-1.5 ml-auto">
                             {file.status === 'done' ? (
                                 <>
-                                    <Shield className="w-3 h-3 text-green-500" />
-                                    <span className="text-[10px] text-green-500 font-bold uppercase tracking-wider hidden sm:inline-block">
+                                    <Shield className="w-3 h-3 text-green-600" />
+                                    <span className="text-[10px] text-green-600 font-bold uppercase tracking-wider hidden sm:inline-block">
                                         Privacy Safe
                                     </span>
                                 </>
                             ) : (
                                 <>
-                                    <Shield className="w-3 h-3 text-yellow-500" />
-                                    <span className="text-[10px] text-yellow-500 font-bold uppercase tracking-wider hidden sm:inline-block">
+                                    <Shield className="w-3 h-3 text-amber-500" />
+                                    <span className="text-[10px] text-amber-500 font-bold uppercase tracking-wider hidden sm:inline-block">
                                         Metadata Detected
                                     </span>
                                 </>
@@ -106,9 +106,12 @@ export function FileCard({ file, onRemove }: FileCardProps) {
 
                 {/* Progress Bar */}
                 {(file.status === 'processing' || file.status === 'done') && (
-                    <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-white/10">
+                    <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-gray-200">
                         <motion.div
-                            className="h-full bg-white"
+                            className={cn(
+                                "h-full",
+                                file.status === 'done' ? "bg-green-500" : "bg-blue-500"
+                            )}
                             initial={{ width: 0 }}
                             animate={{ width: `${file.progress}%` }}
                             transition={{ duration: 0.2 }}
@@ -118,12 +121,12 @@ export function FileCard({ file, onRemove }: FileCardProps) {
             </div>
 
             {file.status === 'queued' && (
-                <span className="hidden md:inline-flex text-[10px] uppercase tracking-wider font-bold text-zinc-500 bg-white/5 px-2 py-1 rounded-full border border-white/5 mr-2">Ready</span>
+                <span className="hidden md:inline-flex text-[10px] uppercase tracking-wider font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-full border border-gray-200 mr-2">Ready</span>
             )}
 
             <button
                 onClick={() => onRemove(file.id)}
-                className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-all"
             >
                 <X className="w-4 h-4" />
             </button>
