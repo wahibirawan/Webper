@@ -50,37 +50,7 @@ export default function GenericPDFTools() {
         }
     };
 
-    // Global Paste Handler
-    useEffect(() => {
-        const handlePaste = (e: ClipboardEvent) => {
-            if (activeTab === 'compress' && files.length > 0) return;
-            if (activeTab === 'split' && files.length > 0) return;
-
-            if (e.clipboardData && e.clipboardData.files.length > 0) {
-                const pastedFiles = Array.from(e.clipboardData.files).filter(f => f.type === 'application/pdf');
-
-                if (pastedFiles.length > 0) {
-                    const newFiles = pastedFiles.map(f => ({
-                        id: Math.random().toString(36).substring(7) + Date.now(),
-                        file: f
-                    }));
-
-                    if (activeTab === 'merge') {
-                        setFiles(prev => [...prev, ...newFiles]);
-                    } else {
-                        setFiles(newFiles.slice(0, 1));
-                    }
-
-                    setDownloadUrl(null);
-                    setResultSize(null);
-                    toast.success('File pasted from clipboard!');
-                }
-            }
-        };
-
-        document.addEventListener('paste', handlePaste);
-        return () => document.removeEventListener('paste', handlePaste);
-    }, [activeTab, files, downloadUrl]);
+    // Paste handled by Dropzone entirely
 
     const confirmTabChange = () => {
         if (pendingTab) {
@@ -210,11 +180,11 @@ export default function GenericPDFTools() {
                     <div className="flex flex-col items-center justify-center space-y-8 relative z-10 w-full max-w-4xl mx-auto pt-32 pb-12 md:pt-40 md:pb-20 px-4">
 
                         {/* Header Section */}
-                        <div className="text-center space-y-4">
-                            <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-gray-900">
+                        <div className="text-center space-y-3 mb-2">
+                            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900">
                                 PDF Tools
                             </h1>
-                            <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+                            <p className="text-base text-gray-500 max-w-lg mx-auto leading-relaxed text-balance">
                                 Professional-grade PDF management running entirely in your browser. Compress, Merge, and Split PDF files with zero data transfer.
                             </p>
                         </div>
@@ -228,35 +198,35 @@ export default function GenericPDFTools() {
                                     <button
                                         onClick={() => handleTabChange('compress')}
                                         className={cn(
-                                            "flex items-center justify-center gap-2 py-5 text-sm font-medium transition-all duration-200 relative",
+                                            "flex items-center justify-center gap-1.5 sm:gap-2 py-4 text-[11px] sm:text-xs font-bold uppercase tracking-tight sm:tracking-widest transition-all duration-200 relative",
                                             activeTab === 'compress'
-                                                ? "text-blue-600 bg-white shadow-[0_-1px_0_0_#fff_inset] before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
-                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                                                ? "text-blue-600 bg-white border-b-2 border-blue-600"
+                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent"
                                         )}
                                     >
-                                        <Settings className="w-4 h-4" /> Compress
+                                        <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Compress
                                     </button>
                                     <button
                                         onClick={() => handleTabChange('merge')}
                                         className={cn(
-                                            "flex items-center justify-center gap-2 py-5 text-sm font-medium transition-all duration-200 relative",
+                                            "flex items-center justify-center gap-1.5 sm:gap-2 py-4 text-[11px] sm:text-xs font-bold uppercase tracking-tight sm:tracking-widest transition-all duration-200 relative",
                                             activeTab === 'merge'
-                                                ? "text-blue-600 bg-white shadow-[0_-1px_0_0_#fff_inset] before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
-                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                                                ? "text-blue-600 bg-white border-b-2 border-blue-600"
+                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent"
                                         )}
                                     >
-                                        <Layers className="w-4 h-4" /> Merge
+                                        <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Merge
                                     </button>
                                     <button
                                         onClick={() => handleTabChange('split')}
                                         className={cn(
-                                            "flex items-center justify-center gap-2 py-5 text-sm font-medium transition-all duration-200 relative",
+                                            "flex items-center justify-center gap-1.5 sm:gap-2 py-4 text-[11px] sm:text-xs font-bold uppercase tracking-tight sm:tracking-widest transition-all duration-200 relative",
                                             activeTab === 'split'
-                                                ? "text-blue-600 bg-white shadow-[0_-1px_0_0_#fff_inset] before:absolute before:bottom-0 before:left-0 before:right-0 before:h-0.5 before:bg-blue-600"
-                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                                                ? "text-blue-600 bg-white border-b-2 border-blue-600"
+                                                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50 border-b-2 border-transparent"
                                         )}
                                     >
-                                        <Scissors className="w-4 h-4" /> Split
+                                        <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Split
                                     </button>
                                 </div>
                             </div>
@@ -270,7 +240,7 @@ export default function GenericPDFTools() {
                                         "relative border-2 border-dashed rounded-2xl transition-all duration-200 text-center group cursor-pointer w-full flex flex-col",
                                         files.length === 0
                                             ? "items-center justify-center border-gray-200 bg-gray-50/50 hover:border-blue-400 hover:bg-blue-50/30 !p-12 md:!p-20"
-                                            : "items-stretch justify-start border-gray-200 bg-white hover:border-blue-300 py-12 px-6"
+                                            : "items-stretch justify-start border-gray-200 bg-white hover:border-blue-300 py-6 px-6"
                                     )}
                                 >
                                     {files.length === 0 ? (
@@ -278,11 +248,11 @@ export default function GenericPDFTools() {
                                             <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center mx-auto mb-5 group-hover:scale-105 transition-all duration-300 shadow-card-premium border border-gray-100">
                                                 <Upload className="w-7 h-7 text-gray-900" />
                                             </div>
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-2 tracking-tight">
-                                                Click to select, drag & drop, or paste PDF{activeTab === 'merge' ? 's' : ''}
+                                            <h3 className="text-base font-bold text-gray-900 mb-1 tracking-tight">
+                                                Click to upload or drag PDF{activeTab === 'merge' ? 's' : ''}
                                             </h3>
-                                            <p className="text-gray-500 text-sm mb-4">
-                                                {activeTab === 'merge' ? 'Select multiple files to combine' : 'Select a single file'}
+                                            <p className="text-gray-500 text-xs font-medium">
+                                                {activeTab === 'merge' ? 'Select multiple files to combine' : 'Select a single file to process'}
                                             </p>
                                             <div className="mt-4 hidden md:inline-block px-4 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs text-blue-600 font-medium">
                                                 Tip: You can use <kbd className="font-sans font-semibold text-blue-700">Ctrl+V</kbd> to paste files
@@ -475,130 +445,144 @@ export default function GenericPDFTools() {
                                     )}
                                 </Dropzone>
                             </div>
-                        </div>     {/* Controls Section */}
-                        <AnimatePresence>
-                            {files.length > 0 && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    className="space-y-8 relative z-20"
-                                >
-                                    <div className="h-px w-full bg-gray-200" />
 
-                                    {/* COMPRESS CONTROLS */}
-                                    {activeTab === 'compress' && !isProcessing && !downloadUrl && (
-                                        <div className="space-y-4">
-                                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Compression Quality</label>
-                                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                                                {(Object.keys(QUALITY_PRESETS) as PDFQuality[]).map((q) => (
-                                                    <button
-                                                        key={q}
-                                                        onClick={() => setCompressionQuality(q)}
-                                                        className={cn(
-                                                            "p-4 rounded-xl border text-left transition-all duration-200 relative overflow-hidden group",
-                                                            compressionQuality === q
-                                                                ? "border-blue-500 bg-blue-50 ring-1 ring-blue-500/50"
-                                                                : "border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300"
-                                                        )}
-                                                    >
-                                                        <div className={cn(
-                                                            "font-semibold text-sm capitalize mb-1",
-                                                            compressionQuality === q ? "text-blue-600" : "text-gray-900"
-                                                        )}>
-                                                            {QUALITY_PRESETS[q].label}
-                                                        </div>
-                                                        <div className="text-xs text-gray-500 leading-tight">
-                                                            {QUALITY_PRESETS[q].description}
-                                                        </div>
-                                                        {compressionQuality === q && (
-                                                            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500" />
-                                                        )}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* SPLIT CONTROLS */}
-                                    {activeTab === 'split' && !isProcessing && !downloadUrl && (
-                                        <div className="space-y-4">
-                                            <label className="text-sm font-medium text-gray-500 uppercase tracking-wider">Page Range</label>
-                                            <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                                <div className="flex-1">
-                                                    <span className="text-xs text-gray-500 block mb-2">Start Page</span>
-                                                    <input
-                                                        type="number"
-                                                        min="1"
-                                                        value={splitRange.start}
-                                                        onChange={(e) => setSplitRange(p => ({ ...p, start: parseInt(e.target.value) || 1 }))}
-                                                        className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 transition-colors"
-                                                    />
-                                                </div>
-                                                <div className="text-gray-400 font-mono mt-6">→</div>
-                                                <div className="flex-1">
-                                                    <span className="text-xs text-gray-500 block mb-2">End Page</span>
-                                                    <input
-                                                        type="number"
-                                                        min="1"
-                                                        value={splitRange.end}
-                                                        onChange={(e) => setSplitRange(p => ({ ...p, end: parseInt(e.target.value) || 1 }))}
-                                                        className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-gray-900 focus:outline-none focus:border-blue-500 transition-colors"
-                                                    />
+                            {/* Controls Footer */}
+                            <AnimatePresence>
+                                {files.length > 0 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="bg-gray-50 border-t border-gray-100 p-6 md:p-8 space-y-8 relative z-20"
+                                    >
+                                        {/* COMPRESS CONTROLS */}
+                                        {activeTab === 'compress' && !isProcessing && !downloadUrl && (
+                                            <div className="max-w-3xl mx-auto space-y-4">
+                                                <label className="text-sm font-bold text-gray-900 uppercase tracking-widest flex items-center justify-center gap-2">
+                                                    <Settings className="w-3.5 h-3.5" />
+                                                    Compression Level
+                                                </label>
+                                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                                                    {(Object.keys(QUALITY_PRESETS) as PDFQuality[]).map((q) => (
+                                                        <button
+                                                            key={q}
+                                                            onClick={() => setCompressionQuality(q)}
+                                                            className={cn(
+                                                                "p-4 rounded-2xl border text-left transition-all duration-200 relative overflow-hidden group shadow-sm",
+                                                                compressionQuality === q
+                                                                    ? "border-blue-600 bg-blue-50/50 ring-1 ring-blue-600 shadow-md transform scale-[1.02]"
+                                                                    : "border-gray-200 bg-white hover:border-blue-300 hover:shadow-md"
+                                                            )}
+                                                        >
+                                                            <div className={cn(
+                                                                "font-bold text-sm capitalize mb-1 flex items-center gap-2",
+                                                                compressionQuality === q ? "text-blue-700" : "text-gray-900"
+                                                            )}>
+                                                                {QUALITY_PRESETS[q].label}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500 leading-relaxed font-medium">
+                                                                {QUALITY_PRESETS[q].description}
+                                                            </div>
+                                                            {compressionQuality === q && (
+                                                                <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-600 shadow-sm" />
+                                                            )}
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             </div>
-                                        </div>
-                                    )}
-
-                                    {/* ACTION BAR */}
-                                    <div className="flex flex-col sm:flex-row items-center justify-end gap-4 pt-4">
-
-                                        {downloadUrl ? (
-                                            <>
-                                                <Button
-                                                    variant="outline"
-                                                    className="w-full sm:w-auto h-12 px-8 rounded-full font-bold border-gray-300 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 gap-2"
-                                                    onClick={clearAll}
-                                                >
-                                                    Start New
-                                                </Button>
-                                                <Button
-                                                    className="w-full sm:w-auto h-12 px-8 rounded-full font-bold btn-tactile-dark gap-2"
-                                                    onClick={() => {
-                                                        const a = document.createElement('a');
-                                                        a.href = downloadUrl;
-                                                        a.download = downloadName;
-                                                        a.click();
-                                                    }}
-                                                >
-                                                    <Download className="w-5 h-5" /> Download Result
-                                                </Button>
-                                            </>
-                                        ) : (
-                                            <Button
-                                                onClick={handleProcess}
-                                                disabled={isProcessing}
-                                                className={cn(
-                                                    "w-full sm:w-auto h-12 px-8 rounded-full font-bold gap-2 transition-all",
-                                                    isProcessing
-                                                        ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                                                        : "btn-tactile-dark hover:shadow-card-hover"
-                                                )}
-                                            >
-                                                {isProcessing ? (
-                                                    <>
-                                                        <Loader2 className="w-5 h-4 animate-spin" />
-                                                        Processing...
-                                                    </>
-                                                ) : (
-                                                    <>Start {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</>
-                                                )}
-                                            </Button>
                                         )}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+
+                                        {/* SPLIT CONTROLS */}
+                                        {activeTab === 'split' && !isProcessing && !downloadUrl && (
+                                            <div className="max-w-xl mx-auto space-y-4">
+                                                <label className="text-sm font-bold text-gray-900 uppercase tracking-widest flex items-center justify-center gap-2">
+                                                    <Scissors className="w-3.5 h-3.5" />
+                                                    Page Range
+                                                </label>
+                                                <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm">
+                                                    <div className="flex-1">
+                                                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">Start Page</span>
+                                                        <input
+                                                            type="number"
+                                                            min="1"
+                                                            value={splitRange.start}
+                                                            onChange={(e) => setSplitRange(p => ({ ...p, start: parseInt(e.target.value) || 1 }))}
+                                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-lg font-bold text-gray-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-center"
+                                                        />
+                                                    </div>
+                                                    <div className="text-gray-300 mb-1">
+                                                        <ArrowRight className="w-6 h-6" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block mb-2">End Page</span>
+                                                        <input
+                                                            type="number"
+                                                            min="1"
+                                                            value={splitRange.end}
+                                                            onChange={(e) => setSplitRange(p => ({ ...p, end: parseInt(e.target.value) || 1 }))}
+                                                            className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-lg font-bold text-gray-900 focus:outline-none focus:border-amber-500 focus:bg-white transition-all text-center"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* ACTION BAR */}
+                                        <div className="flex flex-col items-center justify-center gap-6 pt-2">
+                                            {downloadUrl ? (
+                                                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="lg"
+                                                        className="w-full sm:w-auto h-14 px-8 rounded-full font-bold border-gray-200 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 hover:border-gray-300 transition-all shadow-sm"
+                                                        onClick={clearAll}
+                                                    >
+                                                        Start New One
+                                                    </Button>
+                                                    <Button
+                                                        size="lg"
+                                                        className="w-full sm:w-auto h-14 px-10 rounded-full font-bold btn-tactile-dark text-base transition-all"
+                                                        onClick={() => {
+                                                            const a = document.createElement('a');
+                                                            a.href = downloadUrl;
+                                                            a.download = downloadName;
+                                                            a.click();
+                                                        }}
+                                                    >
+                                                        <Download className="w-5 h-5 mr-2" />
+                                                        Download Result
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    size="lg"
+                                                    onClick={handleProcess}
+                                                    disabled={isProcessing}
+                                                    className={cn(
+                                                        "w-full sm:w-auto min-w-[240px] h-14 px-8 rounded-full font-bold text-base gap-2 transition-all",
+                                                        isProcessing
+                                                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                                            : "btn-tactile-dark"
+                                                    )}
+                                                >
+                                                    {isProcessing ? (
+                                                        <>
+                                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                                            Processing...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Start {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+                                                            <ArrowRight className="w-5 h-5 opacity-60" />
+                                                        </>
+                                                    )}
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
                 </main>
                 <Footer />

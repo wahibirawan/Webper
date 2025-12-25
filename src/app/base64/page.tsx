@@ -43,7 +43,17 @@ export default function Base64Page() {
     };
 
     const handleFilesDrop = useCallback(async (newFiles: File[]) => {
-        const newItems: Base64Item[] = newFiles.map(file => ({
+        // Filter for images only since Dropzone's paste handler might send everything
+        const imageFiles = newFiles.filter(f => f.type.startsWith('image/'));
+
+        if (imageFiles.length === 0) {
+            if (newFiles.length > 0) {
+                toast.error('Only image files are supported');
+            }
+            return;
+        }
+
+        const newItems: Base64Item[] = imageFiles.map(file => ({
             id: Math.random().toString(36).substring(7),
             file,
             preview: URL.createObjectURL(file), // Initially verify original
@@ -91,21 +101,6 @@ export default function Base64Page() {
             }
         }
     }, []);
-
-    // Global Paste Handler
-    useEffect(() => {
-        const handlePaste = (e: ClipboardEvent) => {
-            if (e.clipboardData && e.clipboardData.files.length > 0) {
-                const pastedFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
-                if (pastedFiles.length > 0) {
-                    handleFilesDrop(pastedFiles);
-                    toast.success('Image pasted from clipboard!');
-                }
-            }
-        };
-        document.addEventListener('paste', handlePaste);
-        return () => document.removeEventListener('paste', handlePaste);
-    }, [handleFilesDrop]);
 
     const copyToClipboard = async (text: string) => {
         try {

@@ -35,7 +35,15 @@ export default function Home() {
   const finishedFiles = files.filter(f => f.status === 'done');
 
   const handleFilesDrop = useCallback(async (newFiles: File[]) => {
-    const newFileItemsWithMetadata = await Promise.all(newFiles.map(async (file) => {
+    // Filter for images only
+    const imageFiles = newFiles.filter(f => f.type.startsWith('image/'));
+
+    if (imageFiles.length === 0) {
+      if (newFiles.length > 0) toast.error('Only image files are supported');
+      return;
+    }
+
+    const newFileItemsWithMetadata = await Promise.all(imageFiles.map(async (file) => {
       const metadata = await detectMetadata(file);
       return {
         id: Math.random().toString(36).substring(7),
@@ -52,20 +60,9 @@ export default function Home() {
     setStatus('idle');
   }, []);
 
-  // Global Paste Handler
-  useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      if (e.clipboardData && e.clipboardData.files.length > 0) {
-        const pastedFiles = Array.from(e.clipboardData.files).filter(f => f.type.startsWith('image/'));
-        if (pastedFiles.length > 0) {
-          handleFilesDrop(pastedFiles);
-          toast.success('Image pasted from clipboard!');
-        }
-      }
-    };
-    document.addEventListener('paste', handlePaste);
-    return () => document.removeEventListener('paste', handlePaste);
-  }, [handleFilesDrop]);
+  // Global Paste Handler removed as Dropzone handles it
+  // Ensure we filter efficiently in handleFilesDrop
+
 
   const handleRemoveFile = useCallback((id: string) => {
     setFiles((prev) => {
@@ -435,7 +432,7 @@ export default function Home() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50 rounded-xl h-14 text-base font-medium"
+                  className="w-full border-gray-300 bg-white text-gray-700 hover:bg-gray-50 rounded-full h-14 text-base font-medium"
                   onClick={() => setIsSettingsOpen(true)}
                   disabled={isCompressing}
                 >
