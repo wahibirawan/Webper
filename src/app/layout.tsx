@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://webper.app",
+    url: "https://compress.tor.biz.id",
     title: "Webper - Professional Image Compression",
     description: "Optimize images without limits. 100% private, client-side compression. No ads, no data collection.",
     siteName: "Webper",

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://webper.app/sitemap.xml',
+        sitemap: 'https://compress.tor.biz.id/sitemap.xml',
     }
 }

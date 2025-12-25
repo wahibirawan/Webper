@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Image to Base64 Converter - Optimize & Encode | Webper",
         description: "Convert images to Base64 strings instantly. Optimize images to WebP and get ready-to-use HTML embed code.",
-        url: "https://webper.app/base64",
+        url: "https://compress.tor.biz.id/base64",
     }
 };
 

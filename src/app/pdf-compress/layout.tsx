@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "PDF Tools - Compress, Merge, Split PDF Online | Webper",
         description: "Professional-grade PDF management running entirely in your browser. Compress, Merge, and Split PDF files with zero data transfer.",
-        url: "https://webper.app/pdf-compress",
+        url: "https://compress.tor.biz.id/pdf-compress",
     }
 };
 

@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://webper.app'
+    const baseUrl = 'https://compress.tor.biz.id'
     const currentDate = new Date()
 
     return [
